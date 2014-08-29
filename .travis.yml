@@ -1,0 +1,7 @@
+install:
+    - sudo apt-get install texlive-latex-recommended pandoc
+    - cabal update
+    - cabal install pandoc pandoc-citeproc
+
+script:
+    - make dist/kandi.pdf dist/kandi.html
