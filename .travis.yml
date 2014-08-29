@@ -1,9 +1,17 @@
 language: haskell
-
 install:
-    - sudo apt-get install texlive-latex-recommended pandoc
-    - cabal update
-    - cabal install pandoc pandoc-citeproc
-
+- sudo apt-get install texlive-latex-recommended texlive-lang-swedish texlive-lang-finnish pandoc
+- cabal update
+- cabal install pandoc pandoc-citeproc
 script:
-    - make dist/kandi.pdf dist/kandi.html
+- make dist/kandi.pdf dist/kandi.html
+deploy:
+  provider: releases
+  api_key:
+    secure: B0RzRVregXn1BWrS0O/l0GhZPDWLoMqTZV4kZTal7tzMBB+gA9zIFDJjENx0L7VfY0W0RgDSsTV0tmbCVGnySrSCUrsYJmhKcK/THXyjyCesBKPPJQWvYUPgwFvoxQRP16rcta2Zh6qr4cWkmU0/S0TbMoSjfHaUPRyqUYaRSDk=
+  file: 
+    - dist/kandi.pdf
+    - dist/kandi.html
+  skip_cleanup: true
+  on:
+    repo: Kauhsa/kandi
