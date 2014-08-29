@@ -1,6 +1,6 @@
 language: haskell
 install:
-- sudo apt-get install texlive-latex-recommended texlive-latex-extra texlive-lang-swedish texlive-lang-finnish pandoc
+- sudo apt-get install texlive texlive-lang-swedish texlive-lang-finnish pandoc
 - cabal update
 - cabal install pandoc pandoc-citeproc
 script:
