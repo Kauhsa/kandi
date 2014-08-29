@@ -1,5 +1,7 @@
+ghc: 7.4
+
 install:
-    - sudo apt-get install texlive-latex-recommended pandoc cabal
+    - sudo apt-get install texlive-latex-recommended pandoc
     - cabal update
     - cabal install pandoc pandoc-citeproc
 
