@@ -1,5 +1,5 @@
 install:
-    - sudo apt-get install texlive-latex-recommended pandoc
+    - sudo apt-get install texlive-latex-recommended pandoc cabal
     - cabal update
     - cabal install pandoc pandoc-citeproc
 
