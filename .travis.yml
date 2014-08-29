@@ -1,7 +1,8 @@
 install:
 - echo 'yes' | sudo add-apt-repository ppa:marutter/c2d4u
+- echo 'yes' | sudo add-apt-repository ppa:texlive-backports/ppa
 - sudo apt-get update
-- sudo apt-get install texlive-full texlive-lang-swedish texlive-lang-finnish pandoc pandoc-citeproc
+- sudo apt-get install texlive-latex-recommended texlive-latex-extra texlive-lang-swedish texlive-lang-finnish pandoc pandoc-citeproc
 script:
 - make dist/kandi.pdf dist/kandi.html
 deploy:
