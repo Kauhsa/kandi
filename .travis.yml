@@ -1,8 +1,7 @@
-language: haskell
 install:
-- sudo apt-get install texlive texlive-lang-swedish texlive-lang-finnish pandoc
-- cabal update
-- cabal install pandoc pandoc-citeproc
+- echo 'yes' | sudo add-apt-repository ppa:marutter/c2d4u
+- sudo apt-get update
+- sudo apt-get install texlive-full texlive-lang-swedish texlive-lang-finnish pandoc pandoc-citeproc
 script:
 - make dist/kandi.pdf dist/kandi.html
 deploy:
