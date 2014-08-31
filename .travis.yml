@@ -2,17 +2,15 @@ install:
 - echo 'yes' | sudo add-apt-repository ppa:marutter/c2d4u
 - echo 'yes' | sudo add-apt-repository ppa:texlive-backports/ppa
 - sudo apt-get update
-- sudo apt-get install texlive-latex-recommended texlive-latex-extra texlive-lang-swedish texlive-lang-finnish pandoc pandoc-citeproc
+- sudo apt-get install texlive-latex-recommended texlive-latex-extra texlive-lang-swedish
+  texlive-lang-finnish pandoc pandoc-citeproc
 script:
 - make dist/kandi.pdf dist/kandi.html
-deploy:
-  provider: releases
-  api_key:
-    secure: B0RzRVregXn1BWrS0O/l0GhZPDWLoMqTZV4kZTal7tzMBB+gA9zIFDJjENx0L7VfY0W0RgDSsTV0tmbCVGnySrSCUrsYJmhKcK/THXyjyCesBKPPJQWvYUPgwFvoxQRP16rcta2Zh6qr4cWkmU0/S0TbMoSjfHaUPRyqUYaRSDk=
-  file: 
-    - dist/kandi.pdf
-    - dist/kandi.html
-  skip_cleanup: true
-  on:
-    tags: true
-    all_branches: true
+- "./deploy-gh-pages.sh"
+branches:
+  only:
+  - master
+env:
+  global:
+  - GH_REF: github.com/Kauhsa/kandi.git
+  - secure: KAzWje+qSBRz00UDD+TVGBFt00atlZoRguxkfmjshi6HGvZ7j3mMUV2kjnKRQ2LD5IpLiOU5NijPyo3+tF0peakB5L1aBhQgrgI4gtrkWMLT5Zen5ZoakuieW9DWSr5LdgPKACHBpGA3OPQ4L6JdQlhyj9I1KSP3nQbhlY9qIWs=
