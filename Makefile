@@ -1,17 +1,17 @@
-sources=kandi.md abstrakti.txt templates/*
-abstract=$(shell cat abstrakti.txt)
+sources=src/* templates/*
+abstract=$(shell cat src/abstrakti.txt)
 
 dist/kandi.pdf: $(sources)
 	mkdir -p dist
 
 	pandoc -o dist/kandi.pdf \
-		--biblio lahteet.bib \
+		--biblio src/lahteet.bib \
 		--template templates/template-fi.tex \
 		-V title="Kandi" \
 		-V author="Mika Viinamäki" \
 		-V level="Kandidaatintutkielma" \
 		-V abstract="$(abstract)" \
-		kandi.md
+		src/kandi.md
 
 dist/kandi.html: $(sources)
 	mkdir -p dist
@@ -20,9 +20,9 @@ dist/kandi.html: $(sources)
 		-H templates/header.html \
 		--standalone \
 		--toc \
-		--biblio lahteet.bib \
+		--biblio src/lahteet.bib \
 		-V title="Kandi" \
 		-V author="Mika Viinamäki" \
 		-V level="Kandidaatintutkielma" \
 		-V abstract="$(abstract)" \
-		kandi.md
+		src/kandi.md
