@@ -45,6 +45,16 @@
 %\usepackage[fixlanguage]{babelbib}
 %\selectbiblanguage{finnish}
 
+$if(lhs)$
+\lstnewenvironment{code}{\lstset{language=Haskell,basicstyle=\small\ttfamily}}{}
+$endif$
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+$if(verbatim-in-note)$
+\usepackage{fancyvrb}
+$endif$
+
 % add bibliography to the table of contents
 %\usepackage[nottoc]{tocbibind}
 % tocbibind renames the bibliography, use the following to change it back
