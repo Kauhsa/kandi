@@ -2,7 +2,7 @@
 
 # MapReduce
 
-## Map ja reduce funktionaalisessa ohjelmoinnissa
+## Funktionaalisen ohjelmoinnin *map* ja *reduce*
 
 MapReduce-ohjelmointimallin osien nimet tulevat monissa funktionaalisissa ohjelmointikielissä esiintyvistä funktioista *map* ja *reduce* [@mapreduce]. Funktio *map* soveltaa parametrina annettuna funktiota kaikkin parametrina annetun listan alkioihin, ja funktio *reduce* – usein myös *fold* – soveltaa parametrina annettua funktiota parametrina annetun listan alkioihin niin, että lista alkoita supistuu yhdeksi alkioksi.
 
@@ -54,6 +54,6 @@ Kuitenkin, jos parametriksi antamamme funktio on *liitännäinen*, kuten käytt�
 (1 + (2 + (3 + 4))) == (1 + 2) + (3 + 4)
 ```
 
-Toisin kuin lausekkeessa `(1 + (2 + (3 + 4)))`{.haskell}, mahdollistaa lausekkeen `(1 + 2) + (3 + 4)`{.haskell} laskujärjestys sen vasemman ja oikean puolen evaluoinnin rinnakkain. Tämä piirre mahdollistaa *fold*-funktion rinnakkaisen evaluoinnin Haskell-ohjelmointikieltä rinnakkaisella laskennalla laajentavassa Eden-ohjelmointikielessä [@eden s. 7].
+Toisin kuin lausekkeen `(1 + (2 + (3 + 4)))`{.haskell} laskujärjestys, mahdollistaa lausekkeen `(1 + 2) + (3 + 4)`{.haskell} laskujärjestys sen vasemman ja oikean puolen evaluoinnin rinnakkain – voitiin siis valita laskujärjestys niin, että laskenta on mahdollista rinnakkaistaa. *fold*-funktion parametrina annetun funktion liitännäisyys mahdollistaakin rinnakkaisen evaluoinnin Haskell-ohjelmointikieltä rinnakkaisella laskennalla laajentavassa Eden-ohjelmointikielessä [@eden s. 7].
 
 # Lähteet
