@@ -4,9 +4,11 @@
 
 ## Funktionaalisen ohjelmoinnin *map* ja *reduce*
 
-MapReduce-ohjelmointimallin osien nimet tulevat monissa funktionaalisissa ohjelmointikielissä esiintyvistä funktioista *map* ja *reduce* [@mapreduce]. Funktio *map* soveltaa parametrina annettuna funktiota kaikkin parametrina annetun listan alkioihin, ja funktio *reduce* – usein myös *fold* – soveltaa parametrina annettua funktiota parametrina annetun listan alkioihin niin, että lista alkoita supistuu yhdeksi alkioksi.
+Funktionaalinen ohjelmointi on ohjelmointiparadigma, jonka yksi erityispiirre on *korkeamman kertaluvun funktiot* [@Huda89, s. 382]. Korkeamman kertaluvun funktio tarkoittaa, että funktio voi saada parametrikseen tai arvokseen jonkin funktion.
 
-Funktionaalisessa ohjelmointikielessä nimeltään *Haskell* on *map*-funktion tyyppi määritelty näin:
+Tutustutaan kahteen funktionaalisissa ohjelmointikielissä usein esiintyvään korkeamman kertaluvun funktioon, käyttäen esimerkkinä funktionaalista ohjelmointikieltä nimeltä *Haskell*. Näistä kahdesta funktiosta ensimmäinen, nimeltään *map*, soveltaa parametrina annettuna funktiota kaikkin parametrina annetun listan alkioihin. Funktioista toinen, nimeltään *reduce* tai *fold*, soveltaa parametrina annettua funktiota parametrina annetun listan alkioihin niin, että tämä lista alkoita supistuu yhdeksi arvoksi.
+
+Haskell-ohjelmointikielessä on *map*-funktion tyyppi määritelty näin:
 
 ```haskell
 map :: (a -> b) -> [a] -> [b]
@@ -18,7 +20,7 @@ Parametri `(a -> b)` on funktio, joka ottaa parametrikseen tyypin `a` arvon ja e
 map f [1, 2, 3] == [f 1, f 2, f 3]
 ```
 
-*Map*-funktiota hyödyntäen voidaan esimerkiksi kertoa kaikki listan alkiot kahdella:
+Map-funktiota hyödyntäen voidaan esimerkiksi kertoa kaikki listan alkiot kahdella:
 
 ```haskell
 map (\x -> x * 2) [1, 2, 3] == [2, 4, 6]
@@ -54,6 +56,6 @@ Kuitenkin, jos parametriksi antamamme funktio on *liitännäinen*, kuten käytt�
 (1 + (2 + (3 + 4))) == (1 + 2) + (3 + 4)
 ```
 
-Toisin kuin lausekkeen `(1 + (2 + (3 + 4)))`{.haskell} laskujärjestys, mahdollistaa lausekkeen `(1 + 2) + (3 + 4)`{.haskell} laskujärjestys sen vasemman ja oikean puolen evaluoinnin rinnakkain – voitiin siis valita laskujärjestys niin, että laskenta on mahdollista rinnakkaistaa. *fold*-funktion parametrina annetun funktion liitännäisyys mahdollistaakin rinnakkaisen evaluoinnin Haskell-ohjelmointikieltä rinnakkaisella laskennalla laajentavassa Eden-ohjelmointikielessä [@eden s. 7].
+Toisin kuin lausekkeen `(1 + (2 + (3 + 4)))`{.haskell} laskujärjestys, mahdollistaa lausekkeen `(1 + 2) + (3 + 4)`{.haskell} laskujärjestys sen vasemman ja oikean puolen evaluoinnin rinnakkain – näin voitiin siis valita laskujärjestys siten, että laskenta on mahdollista tehdä rinnakkaisesti. *fold*-funktion parametrina annetun funktion liitännäisyys mahdollistaakin rinnakkaisen evaluoinnin Haskell-ohjelmointikieltä rinnakkaisella laskennalla laajentavassa Eden-ohjelmointikielessä [@eden s. 7].
 
 # Lähteet
