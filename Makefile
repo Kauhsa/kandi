@@ -7,6 +7,7 @@ dist/kandi.pdf: $(sources)
 	pandoc -o dist/kandi.pdf \
 		--biblio src/lahteet.bib \
 		--template templates/template-fi.tex \
+		--csl templates/ieee.csl \
 		-V title="Kandi" \
 		-V author="Mika Viinamäki" \
 		-V level="Kandidaatintutkielma" \
@@ -20,7 +21,9 @@ dist/kandi.html: $(sources)
 		-H templates/header.html \
 		--standalone \
 		--toc \
+		--mathjax \
 		--biblio src/lahteet.bib \
+		--csl templates/ieee.csl \
 		-V title="Kandi" \
 		-V author="Mika Viinamäki" \
 		-V level="Kandidaatintutkielma" \
