@@ -2,13 +2,15 @@
 
 # Hajautettu laskenta
 
-*Hajautetulla laskennalla* tarkoitetaan tässä tutkielmassa kahden tai useamman tietokoneen hyödyntämistä jossain laskentaoperaatiossa. Näin voidaan suorittaa vaativia laskentatehtäviä nopeammin kuin vain yhtä tietokonetta käyttämällä olisi mahdollista. Hajautettuun laskentaan käytetään usein *klusteria*, mikä viittaa joukkoon tietoliikenneyhteyksillä toisiinsa yhdistettyjä itsenäisiä, usein yleisesti saatavilla olevista komponenteista rakennettuja tietokoneita. Tällaisten klustereiden käyttö vaativiin laskentaoperaatioihin on havaittu tarkoitusta varten erityisesti suunniteltujen supertietokoneiden käyttöä edullisemmaksi [@cluster-computing]. Suurten, datan käsittelyyn erikoistuneiden yritysten, kuten Googlen klustereihin voi kuulua satoja tai tuhansia tietokoneita [@mapreduce]. Hyödyntääkseen laskennassa useita tietokoneita ei kuitenkaan tarvitse tehdä suuria invesointeja – yritykset voivat käyttää hyväkseen infrastruktuuria tai laskentaa palveluna tarjoavia yrityksiä, jolloin kustannuksia syntyy vain palvelun käytöstä [@cloudcomputing s. 50].
+*Hajautetulla laskennalla* tarkoitetaan tässä tutkielmassa kahden tai useamman tietokoneen hyödyntämistä jossain laskentaoperaatiossa. Näin voidaan suorittaa vaativia laskentatehtäviä nopeammin kuin vain yhtä tietokonetta käyttämällä olisi mahdollista. Hajautettu laskentaan käytetään usein *klusteria*, joka klusteri on joukko tietoliikenneyhteyksillä toisiinsa yhdistettyjä itsenäisiä, usein yleisesti saatavilla olevista komponenteista rakennettuja tietokoneita. Klustereiden käyttö vaativiin laskentaoperaatioihin on havaittu tarkoitusta varten erityisesti suunniteltujen supertietokoneiden käyttöä edullisemmaksi [@cluster-computing]. Suurten, datan käsittelyyn erikoistuneiden yritysten, kuten Googlen klustereihin voi kuulua satoja tai tuhansia tietokoneita [@mapreduce]. Hyödyntääkseen laskennassa useita tietokoneita ei kuitenkaan tarvitse tehdä suuria invesointeja – yritykset voivat käyttää hyväkseen infrastruktuuria tai laskentaa palveluna tarjoavia yrityksiä, jolloin kustannuksia syntyy vain palvelun käytöstä [@cloudcomputing s. 50].
 
-Hajautettu laskenta tuo kuitenkin mukanaan ongelmia, joita yhdellä tietokoneella suoritettavassa laskennassa ei esiinny. Yksi ongelmista on tiedon jakaminen. Yhdellä tietokoneella laskettaessa voidaan käyttää tiedon lukemiseen ja tallentamiseen tietokoneeseen kiinnitettyä levyä. Hajautetussa laskennassa tiedon lukemisesta ja tallentamisesta muodostuu kuitenkin ongelma.  
+Hajautettu laskenta tuo kuitenkin mukanaan haasteita, joita yhdellä tietokoneella suoritettavassa laskennassa ei esiinny. Haasteisiin kuuluvat muun muassa seuraavat:
 
-Tietokoneiden määrän kasvattaminen kasvattaa myös mahdollisten vikatilanteiden määrää. Koska laskenta-aika voi olla kallista ja ulkoiset seikat voivat edellyttää laskennan valmistumista määräajassa, täytyy hajautetun järjestelmän yksittäisen komponentin vikaantumisen olla häiritsemättä laskentaprosessia mahdollisimman vähän.
+- **Resurssien käyttö**. Yhdellä tietokoneella laskettaessa kaikki resurssit, kuten tallennustila ja keskusmuisti, ovat suoraan laskentaa suorittavan ohjelman käsiteltävissä. Hajautetussa laskennassa näin ei kuitenkaan ole. Kaikilla tietokoneilla on oma keskusmuistinsa ja tallennustilansa, joita muut tietokoneet eivät suoraan voi käsitellä. On mahdollista käyttää yhteistä, klusterin kaikkiin tietokoneisiin yhdistettyä keskitettyä tallennustilaa, mutta tämä muodostaa mahdollisen pullonkaulan ja rajoittaa hajautetun laskennan skaalautumista suuremmille määrille tietokoneita.
 
-Eräs hajautettuun laskentaan liittyvä ongelma on laskennan koordinointi laskentaan osallistuvien tietokoneiden välillä. Ongelman voi ratkaista asettamalla yksi laskentaan osallistuvista prosesseista laskennan koordinoijaksi, *isännäksi* (master), jonka tehtävänä on jakaa laskentatehtävät muille prosesseille. Tätä menetelmää käytetään Googlen tutkijoiden artikkelissaan esittelemässä [@mapreduce] MapReduce-ohjelmointimallissa ja sen toteutuksessa.
+- **Vikasietoisuus**. Tietokoneiden määrän kasvattaminen kasvattaa myös mahdollisten vikatilanteiden määrää. Koska laskenta-aika voi olla kallista ja ulkoiset vaatimukset voivat edellyttää laskennan valmistumista määräajassa, täytyy hajautetun järjestelmän yksittäisen osan vikaantumisen olla häiritsemättä laskentaprosessia mahdollisimman vähän.
+
+Tutkielma esittelee erilaisia ratkaisuja näihin haasteisiin, erityisesti MapReduce-ohjelmointimallin näkökulmasta.
 
 # MapReduce-ohjelmointimalli
 
@@ -63,18 +65,16 @@ MapReduce-ohjelman syötteenä voidaan käyttää joukkoa tiedostoja, mutta MapR
 
 ## MapReduce-ohjelman suorituksen kulku
 
-Googlen esittelemässä MapReduce-ohjelmointimallin toteutuksessa ohjelman suoritus alkaa käynnistämällä käyttäjän ohjelmasta kopio kaikilla laskentaan osallistuvilla tietokoneilla. Yksi näistä kopioista on *isäntäprosessi* (master), joka koordinoi laskennan kulkua. Muut ohjelman kopiot ovat *työprosesseja* (worker), joiden tehtävänä on suorittaa varsinainen laskenta. Ohjelman syöte jaetaan osiksi, ja jokaisesta osasta muodostetaan *map*-laskentatehtävä, jonka isäntäprosessi luovuttaa jollekin työprosessille laskettavaksi. Syötteen jakaminen osiksi mahdollistaa syötteen käsittelyn useassa työläisprosessissa rinnakkain.
+Googlen esittelemässä MapReduce-ohjelmointimallin toteutuksessa ohjelman suoritus alkaa käynnistämällä käyttäjän ohjelmasta kopio kaikilla laskentaan osallistuvilla tietokoneilla. Yksi näistä kopioista on *isäntäprosessi* (master), joka koordinoi laskennan kulkua. Muut ohjelman kopiot ovat *työprosesseja* (worker), joiden tehtävänä on suorittaa varsinainen laskenta. Ohjelman syöte jaetaan osiksi, ja jokaisesta osasta muodostetaan *map*-laskentatehtävä, jonka isäntäprosessi luovuttaa jollekin työprosessille laskettavaksi. Syötteen jakaminen osiksi mahdollistaa syötteen käsittelyn useassa työprosessissa samanaikaisesti.
 
 *Map*-laskentatehtävien tuloksena saatavat välitulokset jaetaan *partitioiksi*. Jokaisen yksittäisen välituloksen kohdepartitio valitaan soveltamalla *hajautusfunktiota* välituloksen avaimeen. Näin saadaan aikaan partitioita, joissa eri avaimet ovat jakautuneet tasaisesti eri osien kesken ja joissa kaikki saman avaimen välitulokset ovat samassa partitiossa.
 
-Jokaisesta partitiosta muodostetaan *reduce*-laskentatehtävä. *Map*-laskentatehtävien tavoin *reduce*-laskentatehtävät sijoitetaan työläisten laskettaviksi isäntäprosessin toimesta. Ennen *reduce*-funktion soveltamista välituloksiin työprosessi järjestää yhden partition välitulokset avaimen mukaan. Näin saman avaimen välitulokset ovat partitiossa peräkkäin, ja avaimia voidaan käsitellä *reduce*-funktiolla yksi kerrallaan. Kun *reduce*-operaatio on yhden avaimen osalta valmis, sen tulos on valmis tallennettavaksi esimerkiksi tiedostoon.
+Jokaisesta partitiosta muodostetaan *reduce*-laskentatehtävä. *Map*-laskentatehtävien tavoin *reduce*-laskentatehtävät sijoitetaan työprosessien laskettaviksi isäntäprosessin toimesta. Ennen *reduce*-funktion soveltamista välituloksiin työprosessi järjestää yhden partition välitulokset avaimen mukaan. Näin välitulokset joilla on sama avain ovat partitiossa peräkkäin, ja avaimia voidaan käsitellä *reduce*-funktiolla yksi kerrallaan. Kun *reduce*-operaatio on yhden avaimen osalta valmis, sen tulos on valmis tallennettavaksi esimerkiksi tiedostoon.
 
 # MapReducen optimointi
 
 ## Combiner
 
 Edellä esitettyä MapReduce-operaation suoritusta voidaan optimoida eri tavoin. Yksi tällainen optimointi on erillisen *combiner*-vaiheen lisääminen.
-
-
 
 # Lähteet
