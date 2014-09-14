@@ -88,7 +88,7 @@ $$
 (kissa, 1), (kissa, 1), (kissa, 1), (kissa, 1), (koira, 1), (koira, 1)
 $$
 
-Välitulosten määrää voidaan vähentää määrittelemällä *combiner*-funktio, joka yhdistää yhdestä *map*-laskentatehtästä saatavat välitulokset ennen kuin niitä käytetään *reduce*-vaiheessa. Usein *combiner*-funktiona voidaan käyttää samaa funktiota minkä käyttäjä on jo määritellyt *reduce*-funktioksi, jolloin esimerkissämme yhden *map*-laskentatehtävän tulos on sama kuin koko *MapReduce*-operaation tulos aiemmin:
+Välitulosten määrää voidaan vähentää määrittelemällä *combiner*-funktio, joka yhdistää yhdestä *map*-laskentatehtästä saatavat välitulokset ennen kuin niitä käytetään *reduce*-vaiheessa. Jos *combiner*-funktiona käytetään samaa funktiota minkä määrittelimme *reduce*-funktioksi, esimerkissämme yhden *map*-laskentatehtävän tulos on sama kuin koko *MapReduce*-operaation tulos aiemmin:
 $$
 (kissa, 4), (koira, 2) 
 $$
@@ -98,17 +98,17 @@ $$
 (kissa, 4), (koira, 3), (koira, 1), (kissa, 2), (kissa, 5)
 $$
 
-Jos yhden *map*-laskentatehtävän välitulosten yhdistäminen *combiner*-funktion avulla tehdään samalla tietokoneella kuin itse *map*-laskentatehtävä, saadaan vähennettyä verkon yli lähetettyjen tulosten määrää.
+Jos yhden *map*-laskentatehtävän välitulosten yhdistäminen *combiner*-funktion avulla tehdään samalla tietokoneella kuin itse *map*-laskentatehtävä, verkon yli lähetettävien välitulosten määrä vähenee.
 
 ## Indeksien käyttäminen
 
 MapReduce-ohjelmointimalli soveltuu sellaisenaan hyvin tarkoituksiin, joissa halutaan käsitellä suuren tietomäärän kaikkia tietueita. Usein kuitenkin halutaan käsitellä vain pientä osaa jostain tietomäärästä, esimerkiksi jollain aikavälillä luotuja tai tietyn sanan sisältäviä dokumentteja. Pelkästään näiden dokumenttien käsittely MapReducen avulla edellyttää koko tietomäärän käymistä läpi ja haluttujen dokumenttien suodattamista *map*-vaiheessa, mikä suurilla tietomäärillä saattaa olla hidasta.
 
-Tämän tyyppisten laskentatehtävien tehostamiseksi on rakennettu useita erilaisia ratkaisuja, jotka laajentavat MapReduce-ohjelmointimallia *indekseillä*. Indeksillä tarkoitetaan tietorakennetta, jolla pyritään nopeuttamaan tietueiden hakemista jonkin tietueeseen liittyvän kentän perusteella. Indeksin käyttö kuitenkin edellyttää ensin indeksin olemassaoloa, ja sen luominen saattaa olla paljon laskentaresursseja vaativa operaatio. Indeksointi onkin yleensä perusteltua vain, jos samaa dataa käytetään laskentaoperaatioissa useita kertoja.
+Tämän tyyppisten laskentatehtävien tehostamiseksi on rakennettu erilaisia ratkaisuja, jotka laajentavat MapReduce-ohjelmointimallia *indekseillä*. Indeksillä tarkoitetaan tietorakennetta, jolla pyritään nopeuttamaan tietueiden hakemista jonkin tietueeseen liittyvän kentän perusteella. Indeksin käyttö kuitenkin edellyttää ensin indeksin olemassaoloa, ja sen luominen saattaa olla paljon laskentaresursseja vaativa operaatio. Indeksointi onkin yleensä perusteltua vain, jos samaa dataa käytetään laskentaoperaatioissa useita kertoja.
 
-*Hadoop++* [@hadooppp] on Apache Hadoop -projektia laajentava järjestelmä, jonka tarkoituksena on parantaa Hadoop-laskentatehtävien suorituskykyä monin eri tavoin. Yksi *Hadoop++*-järjestelmän tuoma laajennus on ns. *troijalainen indeksi* (trojan index). Troijalainen indeksi luodaan lukemalla indeksoitava data, jakamalla se osiin ja lisäämällä jokaiseen osan mukaan kyseisen osan kattava indeksi. Järjestelmä antaa käyttäjälle uusia funktioita toteutettaviksi, joiden avulla indeksoitua dataa voi hyödyntää omissa laskentaoperaatioissa.
+*Hadoop++* [@hadooppp] on Apache Hadoop -projektia laajentava järjestelmä, jonka tarkoituksena on parantaa Hadoop-laskentatehtävien suorituskykyä monin eri tavoin. Yksi *Hadoop++*-järjestelmän tuoma laajennus on ns. *troijalainen indeksi* (trojan index). Troijalainen indeksi luodaan lukemalla indeksoitava data, jakamalla se osiin ja lisäämällä jokaiseen osaan kyseisen osan kattava indeksi. Järjestelmä antaa käyttäjän toteutettavaksi uusia funktiota, joiden avulla indeksoitua dataa voi hyödyntää omissa laskentaoperaatioissa.
 
-*HAIL* (Hadoop Aggressive Indexing Library) [@hail] on niin ikään Apache Hadoop -projektin päälle rakennettu kirjasto, jonka avulla voidaan hyödyntää indeksointia Hadoop-laskentatehtävissä. Tässä kirjastossa käyttäjä käyttää tiedon lataamiseen hajautettuun tiedostojärjestelmään HDFS-asiakasohjelman sijaan HAIL-asiakasohjelmaa, joka tiedon lataamisen yhteydessä indeksoi ladatun tiedon. Näin vältetään erillinen indeksin rakentava laskentaoperaatio – HAIL-asiakasohjelman tehokkuuden vuoksi ylimääräistä aikaa HDFS-asiakasohjelman käyttöön verrattuna ei juurikaan kulu. Käyttäjä voi hyödyntää indeksiä esimerkiksi määrittelemällä *map*-funktion yhteyteen suodattimen, jolloin *map*-laskentatehtävä saa syötteekseen vain suodattimen hyväksymiä tietueita.
+*HAIL* (Hadoop Aggressive Indexing Library) [@hail] on niin ikään Apache Hadoop -projektin päälle rakennettu kirjasto, jonka avulla voidaan hyödyntää indeksointia Hadoop-laskentatehtävissä. Kirjaston käyttäjä siirtää käsiteltävän datan hajautettuun tiedostojärjestelmään HDFS-asiakasohjelman sijaan HAIL-asiakasohjelmalla, joka siirron yhteydessä indeksoi käytetyn datan. Näin vältetään erillinen indeksin rakentava laskentaoperaatio. HAIL-kirjaston esittelevässä artikkelissa mainitaan, että HAIL-asiakasohjelman tehokkuuden vuoksi ylimääräistä aikaa HDFS-asiakasohjelman käyttöön verrattuna ei juurikaan kulu. Käyttäjä voi hyödyntää indeksiä esimerkiksi määrittelemällä *map*-funktion yhteyteen suodattimen, jolloin *map*-laskentatehtävä saa syötteekseen vain suodattimen hyväksymiä tietueita.
 
 # Muut hajautetun laskennan ratkaisut
 
