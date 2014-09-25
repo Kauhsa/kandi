@@ -11,3 +11,4 @@ test*
 *.synctex.gz
 *.toc
 dist/
+.DS_Store
