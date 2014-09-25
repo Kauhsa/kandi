@@ -1,32 +1,22 @@
 # Johdanto
 
-# Hajautettu laskenta
+Suurten tietomäärien kerääminen ja analysointi on usein hyödyllistä liiketoiminnan ymmärtämisen ja tehostamisen kannalta. Esimerkiksi verkkokaupankäyntiin erikoistunut *eBay* kertoi vuonna 2013 säilyttävänsä tietovarastoissaan lähes 90 petatavua kaupankäyntiin liittyvää dataa. Tarvetta suurten tietomäärien käsittelyyn esiintyy kuitenkin muuallakin kuin yrityksissä – fysiikan tutkimukseen käytetyn *Large Hadron Colliderin* päätunnistimet tuottivat karsinnan jälkeen pelkästään vuonna 2010 noin 13 petatavua dataa [@lhc]. Tällaiset, useiden kymmenien petatavujen suuruiset tietovarastot ovat suuruudeltaan monikymmentuhatkertaisia verrattuna tyypillisen kuluttajatietokoneen massamuistin kapasiteettiin ^[Pelijulkaisualusta *Steam* julkaisee kuukausittain tilastoja käyttäjiensä tietokoneista, mukaan lukien massamuistin koon – tätä kirjoittaessa yleisimmäksi massamuistin kooksi raportoidaan 250-499 gigatavua: <http://store.steampowered.com/hwsurvey/>]. Näin suuria tietomääriä onkin vaikea käsitellä käyttäen laskentaan vain yhtä tietokonetta.
 
-*Ei tunnu vieläkään hyvältä – hajautettu laskenta lähtee ehkä turhan kaukaa, monetkaan hajautettujen järjestelmien ongelmat ei liity yhtään aiheeseen. Ehkä lähden puhumaan mielummin suurten datamäärien käsittelystä kuin hajautetusta laskennasta, ja ehkä erillisen hajautettu laskenta -luvun sijaan ymppään asian johdantoon.*
+*Hajautettu laskenta* tarkoittaa kahden tai useamman tietokoneen hyödyntämistä jossain laskentaoperaatiossa. Tällä tavoin voidaan suorittaa vaativia laskentatehtäviä tehokkaammin kuin vain yhtä tietokonetta käyttämällä olisi mahdollista. Eräs tapa tehdä hajautettua laskentaa on hyödyntää joukkoa tietoliikenneyhteyksillä toisiinsa yhdistettyjä itsenäisiä, usein yleisesti saatavilla olevista komponenteista rakennettuja tietokoneita. Tällaista joukkoa tietokonetta kutsutaan *klusteriksi*. Klustereiden käyttö vaativiin laskentaoperaatioihin on havaittu tarkoitusta varten erityisesti suunniteltujen supertietokoneiden käyttöä edullisemmaksi [@cluster-computing]. Suurten, datan käsittelyyn erikoistuneiden yritysten, kuten Googlen klustereihin voi kuulua satoja tai tuhansia tietokoneita [@mapreduce].
 
----
+Hyödyntääkseen hajautettua laskentaa ei ole kuitenkaan välttämätöntä tehdä suuria invesointeja. Oman tietokoneklusterin hankkimisen sijaan yritykset voivat käyttää hyväkseen infrastruktuuria tai laskentaa palveluna tarjoavia yrityksiä, jolloin kustannuksia syntyy vain palvelun käytöstä [@cloudcomputing].
 
-*Hajautettu laskenta* tarkoittaa kahden tai useamman tietokoneen hyödyntämistä jossain laskentaoperaatiossa. Näin voidaan suorittaa vaativia laskentatehtäviä nopeammin kuin vain yhtä tietokonetta käyttämällä olisi mahdollista. Hajautettuun laskentaan käytetään usein *klusteria*, joka on joukko tietoliikenneyhteyksillä toisiinsa yhdistettyjä itsenäisiä, usein yleisesti saatavilla olevista komponenteista rakennettuja tietokoneita. Klustereiden käyttö vaativiin laskentaoperaatioihin on havaittu tarkoitusta varten erityisesti suunniteltujen supertietokoneiden käyttöä edullisemmaksi [@cluster-computing]. Suurten, datan käsittelyyn erikoistuneiden yritysten, kuten Googlen klustereihin voi kuulua satoja tai tuhansia tietokoneita [@mapreduce]. Hyödyntääkseen laskennassa useita tietokoneita ei kuitenkaan tarvitse tehdä suuria invesointeja – yritykset voivat käyttää hyväkseen infrastruktuuria tai laskentaa palveluna tarjoavia yrityksiä, jolloin kustannuksia syntyy vain palvelun käytöstä [@cloudcomputing s. 50].
-
-Hajautettu laskenta tuo kuitenkin mukanaan haasteita, joita yhdellä tietokoneella suoritettavassa laskennassa ei esiinny. Haasteita ovat muun muassa seuraavat:
-
-- **Resurssien jakaminen**. Yhdellä tietokoneella laskettaessa kaikki resurssit, kuten tallennustila ja keskusmuisti, ovat suoraan laskentaa suorittavan ohjelman käsiteltävissä. Hajautetussa laskennassa näin ei kuitenkaan ole. Kaikilla tietokoneilla on oma keskusmuistinsa ja tallennustilansa, joita muut tietokoneet eivät voi suoraan käsitellä. On mahdollista käyttää yhteistä, klusterin kaikkiin tietokoneisiin yhdistettyä keskitettyä tallennustilaa, mutta tämä muodostaa mahdollisen pullonkaulan ja rajoittaa hajautetun laskennan skaalautumista suuremmille määrille tietokoneita.
-
-- **Vikasietoisuus**. Tietokoneiden määrän kasvattaminen kasvattaa myös mahdollisten vikatilanteiden määrää. Koska laskenta-aika voi olla kallista ja ulkoiset vaatimukset voivat edellyttää laskennan valmistumista määräajassa, täytyy hajautetun järjestelmän yksittäisen osan vikaantumisen olla häiritsemättä laskentaprosessia mahdollisimman vähän.
-
-- Muita, lähteitä...
-
-Tutkielma esittelee erilaisia ratkaisuja näihin haasteisiin, erityisesti MapReduce-ohjelmointimallin näkökulmasta.
+Tutkielma esittelee MapReduce-ohjelmointimallin, joka on menetelmä käsitellä suuria tietomääriä hajautetusti. Tutkielma esittelee ohjelmointimallin toiminnan sekä erilaisia, MapReduce-laskentatehtävien suorituskyvyn parantamiseen tähtääviä optimointeja. Lisäksi tutkielmassa verrataan MapReduce-ohjelmointimallia lyhyesti muihin hajautetun laskennan ratkaisuihin.
 
 # MapReduce-ohjelmointimalli
 
-MapReduce on Googlen vuonna 2003 kehittämä ohjelmointimalli [@mapreduce2, s. 72], jota käytetään suurten tietomäärien käsittelyyn ja tuottamiseen [@mapreduce s. 107]. Ohjelmointimallin tarkoituksena on vähentää hajautetun laskennan monimutkaisuutta tarjoamalla useaan hajautetun laskennan sovellukseen soveltuva abstraktio [@mapreduce, s. 72]. Hyödyntämällä sovelluksessaan MapReduce-ohjelmointimallin toteutusta ohjelmoijan ei tarvitse huolehtia monista hajautettuun laskentaan liittyvistä yksityiskohdista, kuten vikasietoisuudesta tai datan hajauttamisesta [@mapreduce, s. 72]. Googlen alkuperäistä MapReduce-toteutusta laajemmin käytetyksi on noussut alun perin Yahoo!:lla vuonna 2005 kehitetty avoimen lähdekoodin Apache Hadoop -projekti.
+MapReduce on Googlen vuonna 2003 kehittämä ohjelmointimalli [@mapreduce2, s. 72], jota käytetään suurten tietomäärien käsittelyyn ja tuottamiseen [@mapreduce s. 107]. Ohjelmointimallin tarkoituksena on vähentää hajautetun laskennan monimutkaisuutta tarjoamalla useaan hajautetun laskennan sovellukseen soveltuva abstraktio [@mapreduce, s. 72]. Hyödyntämällä sovelluksessaan MapReduce-ohjelmointimallin toteutusta ohjelmoijan ei tarvitse huolehtia monista hajautettuun laskentaan liittyvistä yksityiskohdista, kuten vikasietoisuudesta tai datan hajauttamisesta [@mapreduce, s. 72]. Eräs tunnettu MapReduce-ohjelmointimallin toteutus on avoimen lähdekoodin Apache Hadoop -projekti, jonka käyttäjiin kuuluvat muun muassa Facebook ja Yahoo! [@hive].
 
 MapReduce-ohjelmointimallissa käyttäjä toteuttaa kaksi funktiota, joita kutsutaan nimillä *map* ja *reduce*. Funktiot ovat funktionaalisessa ohjelmoinnissa esiintyvien samannimisten funktioiden inspiroimia [@mapreduce, s. 107], mutta eivät suoraan vastaa näitä funktioita [@mapreduce-revisited, s. 5]. Funktiota *map* käytetään suorittamaan jokin operaatio jokaiselle syötteen alkiolle erikseen, ja funktiota *reduce* käytetään yhdistämään tämä käsitellyt alkiot yhdeksi tulokseksi.
 
 ## *Map*- ja *reduce*-funktiot
 
-Funktioiden *map* ja *reduce* tyypit on artikkelissa @mapreduce (s. 108) määritelty näin:
+Funktioiden *map* ja *reduce* tyypit on MapReduce-ohjelmointimallin esittelemässä artikkelissa [@mapreduce] määritelty näin:
 $$
 \begin{aligned}
 map &: (k1, v1) \to list(k2, v2) \\
@@ -34,7 +24,9 @@ reduce &: (k2, list(v2)) \to list(v2)
 \end{aligned}
 $$
 
-Funktion *map* tarkoituksena on tuottaa tuloksia, joita myöhemmin käytetään *reduce*-funktion syötteenä [@mapreduce, s. 107]. *Map*-funktio muuntaa MapReduce-ohjelman syötteenään saamat avain-arvo-parit uusiksi avain-arvo-pareiksi. Näitä *map*-funktion tuloksia kutsutaan *välituloksiksi*. MapReduce-ohjelmointimalli ei ota kantaa minkään syötteen tai tuloksen avaimen tai arvon merkitykseen, vaan se riippuu käyttäjän syötteestä sekä *map*- ja *reduce*-funktioiden toteutuksesta. Havainnollistetaan ohjelmointimallin toimintaa pseudokoodimuotoisella esimerkillä, joka laskee *kissa*- ja *koira*-sanojen esiintymien lukumäärää joukossa tekstimuotoisia dokumentteja:
+Funktion *map* tarkoituksena on tuottaa tuloksia, joita myöhemmin käytetään *reduce*-funktion syötteenä [@mapreduce, s. 107]. *Map*-funktio muuntaa MapReduce-ohjelman syötteenään saamat avain-arvo-parit uusiksi avain-arvo-pareiksi. Näitä *map*-funktion tuloksia kutsutaan *välituloksiksi*. MapReduce-ohjelmointimalli ei ota kantaa minkään syötteen tai tuloksen avaimen tai arvon merkitykseen, vaan se riippuu käyttäjän syötteestä sekä *map*- ja *reduce*-funktioiden toteutuksesta.
+
+Havainnollistetaan ohjelmointimallin toimintaa pseudokoodimuotoisella esimerkillä, joka laskee *kissa*- ja *koira*-sanojen esiintymien lukumäärää joukossa tekstimuotoisia dokumentteja:
 
 ```python
 def map(avain, arvo):
@@ -73,17 +65,19 @@ MapReduce-ohjelman syötteenä voidaan käyttää joukkoa tiedostoja, mutta MapR
 
 ## MapReduce-ohjelman suorituksen kulku
 
-Googlen esittelemässä MapReduce-ohjelmointimallin toteutuksessa ohjelman suoritus alkaa käynnistämällä käyttäjän ohjelmasta kopio kaikilla laskentaan osallistuvilla tietokoneilla. Yksi näistä kopioista on *isäntäprosessi* (master), joka koordinoi laskennan kulkua. Muut ohjelman kopiot ovat varsinaisen laskennan suorittavia *työprosesseja* (worker). Ohjelman syöte jaetaan osiksi, ja jokaisesta osasta muodostetaan *map*-laskentatehtävä, jonka isäntäprosessi luovuttaa jollekin työprosessille laskettavaksi. Syötteen jakaminen osiksi mahdollistaa syötteen käsittelyn useassa työprosessissa samanaikaisesti.
+Googlen esittelemässä MapReduce-ohjelmointimallin toteutuksessa ohjelman suoritus alkaa käynnistämällä käyttäjän ohjelmasta kopio kaikilla laskentaan osallistuvilla tietokoneilla. Yksi näistä kopioista on *isäntäprosessi* (master), joka koordinoi laskennan kulkua. Muut ohjelman kopiot ovat varsinaisen laskennan suorittavia *työprosesseja* (worker). Ohjelman syöte pilkotaan, ja jokaista ohjelman syötteen osaa kutsutaan *jaoksi*. Jokaisesta jaosta muodostetaan *map*-laskentatehtävä, jonka isäntäprosessi luovuttaa jollekin työprosessille laskettavaksi. Syötteen jakaminen mahdollistaa syötteen käsittelyn useassa työprosessissa samanaikaisesti.
 
-*Map*-laskentatehtävien tuloksena saatavat välitulokset jaetaan *partitioiksi*. Jokaisen yksittäisen välituloksen kohdepartitio valitaan soveltamalla *hajautusfunktiota* välituloksen avaimeen. Näin saadaan aikaan partitioita, joissa eri avaimet ovat jakautuneet tasaisesti eri osien kesken ja joissa kaikki saman avaimen välitulokset ovat samassa partitiossa.
+*Map*-laskentatehtävien tuloksena saatavista välituloksista muodostetaan *osia*. Jokainen yksittäinen välitulos tallennetaan johonkin osaan, joka valitaan soveltamalla *hajautusfunktiota* välituloksen avaimeen. Näin saadaan aikaan osia, joissa eri avaimet ovat jakautuneet tasaisesti eri osien kesken ja joissa kaikki saman avaimen välitulokset ovat samassa osassa.
 
-Jokaisesta partitiosta muodostetaan *reduce*-laskentatehtävä. *Map*-laskentatehtävien tavoin *reduce*-laskentatehtävät sijoitetaan työprosessien laskettaviksi isäntäprosessin toimesta. Ennen *reduce*-funktion soveltamista välituloksiin työprosessi järjestää yhden partition välitulokset avaimen mukaan. Näin välitulokset joilla on sama avain ovat partitiossa peräkkäin, ja avaimia voidaan käsitellä *reduce*-funktiolla yksi kerrallaan. Kun *reduce*-operaatio on yhden avaimen osalta valmis, sen tulos voidaan tallentaa tiedostoon.
+Jokaisesta partitiosta muodostetaan *reduce*-laskentatehtävä. *Map*-laskentatehtävien tavoin *reduce*-laskentatehtävät sijoitetaan työprosessien laskettaviksi isäntäprosessin toimesta. Ennen *reduce*-funktion soveltamista välituloksiin työprosessi järjestää yhden osan välitulokset avaimen mukaan. Näin välitulokset joilla on sama avain ovat osan sisällä peräkkäin, ja avaimia voidaan käsitellä *reduce*-funktiolla yksi kerrallaan. Kun *reduce*-operaatio on yhden avaimen osalta valmis, sen tulos voidaan tallentaa tiedostoon.
 
 # MapReducen optimointi
 
+Edellä esitettyä MapReduce-operaation suoritusta voidaan laajentaa eri tavoin. Erilaisilla laajennuksilla voidaan parantaa jotain MapReduce-ohjelmointimallin osa-aluetta, mahdollisesti tehostaen tietynlaisten laskentatehtävien suorituskykyä merkittävästi.
+
 ## Combiner
 
-Edellä esitettyä MapReduce-operaation suoritusta voidaan optimoida eri tavoin. Yksi tällainen optimointi on erillisen *combiner*-vaiheen lisääminen *MapReduce*-operaatioon. *Combiner*-vaiheen käyttö nopeuttaa *MapReduce*-operaation suoritusta erityisesti tilanteissa, joissa saman avaimen omaavia välituloksia on paljon. Käytetään esimerkkinä yhtä *map*-laskentatehtävää ja sen laskemina välituloksina samoja välituloksia, mitä aiemmin käytettiin koko *map*-vaiheen jälkeisinä välituloksina:
+MapReduce-ohjelmointimallin esittelevässä artikkelissa [@mapreduce] esitellään myös optimointi, joka lisää MapReduce-operaatioon uuden vaiheen nimeltään *combiner*. *Combiner*-vaiheen käyttö nopeuttaa *MapReduce*-operaation suoritusta erityisesti tilanteissa, joissa saman avaimen omaavia välituloksia on paljon. Käytetään esimerkkinä yhtä *map*-laskentatehtävää ja sen laskemina välituloksina samoja välituloksia, mitä aiemmin käytettiin koko *map*-vaiheen jälkeisinä välituloksina:
 $$
 (kissa, 1), (kissa, 1), (kissa, 1), (kissa, 1), (koira, 1), (koira, 1)
 $$
@@ -104,11 +98,13 @@ Jos yhden *map*-laskentatehtävän välitulosten yhdistäminen *combiner*-funkti
 
 MapReduce-ohjelmointimalli soveltuu sellaisenaan hyvin tarkoituksiin, joissa halutaan käsitellä suuren tietomäärän kaikkia tietueita. Usein kuitenkin halutaan käsitellä vain pientä osaa jostain tietomäärästä, esimerkiksi jollain aikavälillä luotuja tai tietyn sanan sisältäviä dokumentteja. Pelkästään näiden dokumenttien käsittely MapReducen avulla edellyttää koko tietomäärän käymistä läpi ja haluttujen dokumenttien suodattamista *map*-vaiheessa, mikä suurilla tietomäärillä saattaa olla hidasta.
 
-Tämän tyyppisten laskentatehtävien tehostamiseksi on rakennettu erilaisia ratkaisuja, jotka laajentavat MapReduce-ohjelmointimallia *indekseillä*. Indeksillä tarkoitetaan tietorakennetta, jolla pyritään nopeuttamaan tietueiden hakemista jonkin tietueeseen liittyvän kentän perusteella. Indeksin käyttö kuitenkin edellyttää ensin indeksin olemassaoloa, ja sen luominen saattaa olla paljon laskentaresursseja vaativa operaatio. Indeksointi onkin yleensä perusteltua vain, jos samaa dataa käytetään laskentaoperaatioissa useita kertoja.
+Tämän tyyppisten laskentatehtävien tehostamiseksi on rakennettu erilaisia ratkaisuja, jotka laajentavat MapReduce-ohjelmointimallia *indekseillä*. Indeksillä tarkoitetaan tietorakennetta, jolla pyritään nopeuttamaan tietueiden hakemista jonkin tietueeseen liittyvän kentän perusteella. Indeksin käyttö kuitenkin edellyttää ensin indeksin olemassaoloa, ja sen luominen saattaa olla paljon laskentaresursseja vaativa operaatio – tällöin indeksointi onkin perusteltua vain, mikäli samaa syötettä käytetään laskentaoperaatioissa useita kertoja.
 
-*Hadoop++* [@hadooppp] on Apache Hadoop -projektia laajentava järjestelmä, jonka tarkoituksena on parantaa Hadoop-laskentatehtävien suorituskykyä monin eri tavoin. Yksi *Hadoop++*-järjestelmän tuoma laajennus on ns. *troijalainen indeksi* (trojan index). Troijalainen indeksi luodaan lukemalla indeksoitava data, jakamalla se osiin ja lisäämällä jokaiseen osaan kyseisen osan kattava indeksi. Järjestelmä antaa käyttäjän toteutettavaksi uusia funktiota, joiden avulla indeksoitua dataa voi hyödyntää omissa laskentaoperaatioissa.
+Richer ja kumppanit esittelevät artikkelissaan [@hail] Apache Hadoop -projektin päälle rakennetun *HAIL*-kirjaston (Hadoop Aggressive Indexing Library), jonka avulla voidaan hyödyntää indeksointia Hadoop-laskentatehtävissä. HAIL tarjoaa indeksin luomiseen kaksi erilaista menetelmää, joista molemmat välttävät erillisen, indeksin rakentavan laskentaoperaation. *Staattinen indeksointi* tarkoittaa tiedon indeksointia samalla, kun sitä ladataan hajautettuun tiedostojärjestelmään. *Adaptiivinen indeksointi* tarkoittaa indeksin rakentamista samalla, kun indeksoitavaa dataa käytetään jonkin MapReduce-laskentatehtävän yhteydessä. Adaptiivinen indeksointi mahdollistaa indeksien hyödyntämisen, vaikka syötteenä käytettävää dataa ei olisikaan staattisesti indeksoitu tiedostojärjestelmään lataamisen yhteydessä.
 
-*HAIL* (Hadoop Aggressive Indexing Library) [@hail] on niin ikään Apache Hadoop -projektin päälle rakennettu kirjasto, jonka avulla voidaan hyödyntää indeksointia Hadoop-laskentatehtävissä. Kirjaston käyttäjä siirtää käsiteltävän datan hajautettuun tiedostojärjestelmään HDFS-asiakasohjelman sijaan HAIL-asiakasohjelmalla, joka siirron yhteydessä indeksoi käytetyn datan. Näin vältetään erillinen indeksin rakentava laskentaoperaatio. HAIL-kirjaston esittelevässä artikkelissa mainitaan, että HAIL-asiakasohjelman tehokkuuden vuoksi ylimääräistä aikaa HDFS-asiakasohjelman käyttöön verrattuna ei juurikaan kulu. Käyttäjä voi hyödyntää indeksiä esimerkiksi määrittelemällä *map*-funktion yhteyteen suodattimen, jolloin *map*-laskentatehtävä saa syötteekseen vain suodattimen hyväksymiä tietueita.
+Käyttäjä voi hyödyntää indeksiä esimerkiksi määrittelemällä *map*-funktion yhteyteen suodattimen, jolloin *map*-laskentatehtävä saa syötteekseen vain suodattimen hyväksymiä tietueita. Koska indeksistä tietueiden hakeminen on nopeaa, on indeksin käyttäminen suodatuksessa tehokkaampaa kuin datan suodattaminen vasta *map*-laskentatehtävän yhteydessä.
+
+Artikkelissa esiteltyjen tuloksien mukaan datan siirtoon käytetyn HAIL-asiakasohjelman tehokkuuden vuoksi staattinen indeksointi datan siirtämisen yhteydessä ei ole hitaampaa kuin Hadoop-projektin mukana tulevan asiakasohjelman käyttö datan siirtämiseen. Indeksin käyttäminen paransi Hadoop-laskentatehtävien suorituskykyä 64-kertaisesti.
 
 # Muut hajautetun laskennan ratkaisut
 
