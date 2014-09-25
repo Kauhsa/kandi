@@ -6,7 +6,7 @@ digraph {
         style = "filled";
         color = "lightgrey";
         node [shape = "box"; style = "filled"; color = "white"];
-        dok1[label = <(dokumentti 1,<br/>"kissa koira <br/> vene hauki")>];
+        dok1[label = <(dokumentti 1,<br/>"kissa koira <br/> vene hauki <br/> kissa")>];
         dok2[label = <(dokumentti 2,<br/>"koira vene <br/> kissa pihvi")>];
     }
 
@@ -20,6 +20,7 @@ digraph {
         node [shape = "box"; style = "filled"; color = "white"];
         kissa1[label = "(kissa, 1)"];
         kissa2[label = "(kissa, 1)"];
+        kissa3[label = "(kissa, 1)"];
         koira1[label = "(koira, 1)"];
         koira2[label = "(koira, 1)"];
     }    
@@ -32,7 +33,7 @@ digraph {
         style = "filled";
         color = "lightgrey";
         node [shape = "box"; style = "filled"; color = "white"];
-        res_kissa[label = "(kissa, 2)"];
+        res_kissa[label = "(kissa, 3)"];
         res_koira[label = "(koira, 2)"];
     }
     
@@ -40,10 +41,12 @@ digraph {
     dok2 -> map2;
     map1 -> kissa1;
     map1 -> koira1;
+    map1 -> kissa3;
     map2 -> kissa2;
     map2 -> koira2;
     kissa1 -> red_kissa;
     kissa2 -> red_kissa;
+    kissa3 -> red_kissa;
     koira1 -> red_koira;
     koira2 -> red_koira;
     red_kissa -> res_kissa;
