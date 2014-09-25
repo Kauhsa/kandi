@@ -1,23 +1,41 @@
 digraph {
     rankdir = LR;
     
-    dok1[label = <(dokumentti 1,<br/>"kissa koira <br/> vene hauki")>; shape = "box"];
-    dok2[label = <(dokumentti 2,<br/>"koira vene <br/> kissa pihvi")>; shape = "box"];
+    subgraph cluster_input {
+        label = "Syöte";
+        style = "filled";
+        color = "lightgrey";
+        node [shape = "box"; style = "filled"; color = "white"];
+        dok1[label = <(dokumentti 1,<br/>"kissa koira <br/> vene hauki")>];
+        dok2[label = <(dokumentti 2,<br/>"koira vene <br/> kissa pihvi")>];
+    }
 
-    kissa1[label = "(kissa, 1)"; shape = "box"];
-    kissa2[label = "(kissa, 1)"; shape = "box"];
-    koira1[label = "(koira, 1)"; shape = "box"];
-    koira2[label = "(koira, 1)"; shape = "box"];
-    
     map1[label = "map";];
     map2[label = "map";];
+
+    subgraph cluster_intermediate {
+        label = "Välitulokset";
+        style = "filled";
+        color = "lightgrey";
+        node [shape = "box"; style = "filled"; color = "white"];
+        kissa1[label = "(kissa, 1)"];
+        kissa2[label = "(kissa, 1)"];
+        koira1[label = "(koira, 1)"];
+        koira2[label = "(koira, 1)"];
+    }    
 
     red_kissa[label = "reduce";];
     red_koira[label = "reduce";];
 
-    res_kissa[label = "(kissa, 2)"; shape = "box"];
-    res_koira[label = "(koira, 2)"; shape = "box"];
-
+    subgraph cluster_output {
+        label = "Tulos";
+        style = "filled";
+        color = "lightgrey";
+        node [shape = "box"; style = "filled"; color = "white"];
+        res_kissa[label = "(kissa, 2)"];
+        res_koira[label = "(koira, 2)"];
+    }
+    
     dok1 -> map1;
     dok2 -> map2;
     map1 -> kissa1;
