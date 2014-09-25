@@ -16,6 +16,8 @@ MapReduce-ohjelmointimallissa käyttäjä toteuttaa kaksi funktiota, joita kutsu
 
 ## *Map*- ja *reduce*-funktiot
 
+![MapReduce-ohjelmointimallin kulku](dist/map-and-reduce)
+
 Funktioiden *map* ja *reduce* tyypit on MapReduce-ohjelmointimallin esittelemässä artikkelissa [@mapreduce] määritelty näin:
 $$
 \begin{aligned}

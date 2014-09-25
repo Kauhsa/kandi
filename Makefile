@@ -1,12 +1,24 @@
-sources=src/* templates/*
+sources=src/abstrakti.txt src/kandi.md src/lahteet.bib templates/*
 abstract=$(shell cat src/abstrakti.txt)
 
-dist/kandi.pdf: $(sources)
+.PHONY: dist-dir
+
+dist-dir:
+	mkdir -p dist
+
+dist/map-and-reduce.svg: dist-dir src/images/map-and-reduce.dot
+	dot src/images/map-and-reduce.dot -Tsvg -o dist/map-and-reduce.svg
+
+dist/map-and-reduce.pdf: dist-dir src/images/map-and-reduce.dot
+	dot src/images/map-and-reduce.dot -Tpdf -o dist/map-and-reduce.pdf
+
+dist/kandi.pdf: dist-dir $(sources) dist/map-and-reduce.pdf
 	mkdir -p dist
 
 	pandoc -o dist/kandi.pdf \
 		--biblio src/lahteet.bib \
 		--template templates/template-fi.tex \
+		--default-image-extension pdf \
 		--csl templates/ieee.csl \
 		-V title="MapReduce-ohjelmointimalli" \
 		-V author="Mika Viinamäki" \
@@ -14,14 +26,16 @@ dist/kandi.pdf: $(sources)
 		-V abstract="$(abstract)" \
 		src/kandi.md
 
-dist/kandi.html: $(sources)
+dist/kandi.html: $(sources) dist/map-and-reduce.svg
 	mkdir -p dist
 
 	pandoc -o dist/kandi.html \
 		-H templates/header.html \
 		--standalone \
+		--self-contained \
 		--toc \
 		--mathjax \
+		--default-image-extension svg \
 		--biblio src/lahteet.bib \
 		--csl templates/ieee.csl \
 		-V title="MapReduce-ohjelmointimalli" \
