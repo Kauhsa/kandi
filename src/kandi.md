@@ -16,8 +16,6 @@ MapReduce-ohjelmointimallissa käyttäjä toteuttaa kaksi funktiota, joita kutsu
 
 ## *Map*- ja *reduce*-funktiot
 
-![MapReduce-ohjelmointimallin kulku](dist/map-and-reduce)
-
 Funktioiden *map* ja *reduce* tyypit on MapReduce-ohjelmointimallin esittelemässä artikkelissa [@mapreduce] määritelty näin:
 $$
 \begin{aligned}
@@ -62,6 +60,8 @@ Jos laskennan tulos vastasi *map*-vaiheen jälkeen aiemmin esittämäämme mahdo
 $$
 (kissa, 4), (koira, 2)
 $$
+
+![MapReduce-ohjelmointimallin *map* ja *reduce* -funktioiden käyttö](dist/map-and-reduce)
 
 MapReduce-ohjelman syötteenä voidaan käyttää joukkoa tiedostoja, mutta MapReduce-ohjelmointimalli ei rajoitu vain niihin – ohjelmointimallin toteutus voi mahdollistaa esimerkiksi tietokantahakujen tulosten käytön syötteenä [@mapreduce2, s. 74]. Myös laskentaoperaation lopullinen tulos voidaan, ohjelmointimallin toteutuksesta riippuen, tallentaa esimerkiksi tiedostoiksi tai tietokannan riveiksi [@mapreduce2 s. 74]. Usein tulosta halutaan käyttää uuden MapReduce-laskentaoperaation syötteenä [@mapreduce s. 109].
 
