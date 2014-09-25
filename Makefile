@@ -8,7 +8,7 @@ dist/kandi.pdf: $(sources)
 		--biblio src/lahteet.bib \
 		--template templates/template-fi.tex \
 		--csl templates/ieee.csl \
-		-V title="Kandi" \
+		-V title="MapReduce-ohjelmointimalli" \
 		-V author="Mika Viinamäki" \
 		-V level="Kandidaatintutkielma" \
 		-V abstract="$(abstract)" \
@@ -24,7 +24,7 @@ dist/kandi.html: $(sources)
 		--mathjax \
 		--biblio src/lahteet.bib \
 		--csl templates/ieee.csl \
-		-V title="Kandi" \
+		-V title="MapReduce-ohjelmointimalli" \
 		-V author="Mika Viinamäki" \
 		-V level="Kandidaatintutkielma" \
 		-V abstract="$(abstract)" \
