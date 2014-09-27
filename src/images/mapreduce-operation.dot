@@ -1,0 +1,82 @@
+digraph {
+	rankdir = LR;
+
+	subgraph cluster_maptask1 {
+		label = <<i>Map</i>-laskentatehtävä 1>;
+        style = "filled";
+        color = "lightgrey";
+        node [style = "filled"; color = "white"];
+		split1 [label = "Jako 1"; shape = "box"];
+		intermediate1 [label = "Välitulos 1"];
+		intermediate2 [label = "Välitulos 2"];
+	}
+	
+	subgraph cluster_maptask2 {
+		label = <<i>Map</i>-laskentatehtävä 2>;
+        style = "filled";
+        color = "lightgrey";
+        node [style = "filled"; color = "white"];
+		split2 [label = "Jako 2"; shape = "box"];
+		intermediate3 [label = "Välitulos 3"];
+		intermediate4 [label = "Välitulos 4"];
+	}
+	
+	subgraph cluster_maptask3 {
+		label = <<i>Map</i>-laskentatehtävä 3>;
+        style = "filled";
+        color = "lightgrey";
+        node [style = "filled"; color = "white"];
+		split3 [label = "Jako 3"; shape = "box"];
+		intermediate5 [label = "Välitulos 5"];
+		intermediate6 [label = "Välitulos 6"];
+	}
+
+	subgraph cluster_reducetask1 {
+		label = <<i>Reduce</i>-laskentatehtävä 1>
+        style = "filled";
+        color = "lightgrey";
+        node [style = "filled"; color = "white"];
+		partition1 [label = "Osa 1"; shape = "box"];
+		result1 [label = "Tulos 1"];
+	}
+
+	subgraph cluster_reducetask2 {
+		label = <<i>Reduce</i>-laskentatehtävä 2>
+        style = "filled";
+        color = "lightgrey";
+        node [style = "filled"; color = "white"];
+		partition2 [label = "Osa 2"; shape = "box"];
+		result2 [label = "Tulos 2"];
+	}
+
+	subgraph cluster_reducetask3 {
+		label = <<i>Reduce</i>-laskentatehtävä 3>
+        style = "filled";
+        color = "lightgrey";
+        node [style = "filled"; color = "white"];
+		partition3 [label = "Osa 3"; shape = "box"];
+		result3 [label = "Tulos 3"];
+	}
+
+	input -> split1; 
+	input -> split2;
+	input -> split3;
+
+	split1 -> intermediate1; 
+	split1 -> intermediate2;
+	split2 -> intermediate3;
+	split2 -> intermediate4;
+	split3 -> intermediate5;
+	split3 -> intermediate6;
+
+	intermediate1 -> partition1;
+	intermediate2 -> partition1;
+	intermediate3 -> partition1;
+	intermediate4 -> partition2;
+	intermediate5 -> partition2;
+	intermediate6 -> partition3;
+
+	partition1 -> result1;
+	partition2 -> result2;
+	partition3 -> result3;
+}
