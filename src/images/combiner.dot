@@ -1,0 +1,69 @@
+digraph {
+	rankdir = LR;
+
+	subgraph cluster_maptask1 {
+		label = <<i>Map</i>-laskentatehtävä 1>;
+        style = "filled";
+        color = "lightgrey";
+        node [style = "filled"; color = "white"];
+		split1 [label = <<table border="0"><tr><td>Jako 1</td></tr><hr/><tr><td>(1, "koira norsu...")<br/>(2, "kissa mursu...")</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		intermediate1 [label = <<table border="0"><tr><td>Välitulos 1</td></tr><hr/><tr><td>("kissa", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		intermediate2 [label = <<table border="0"><tr><td>Välitulos 2</td></tr><hr/><tr><td>("koira", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black" ];
+		intermediate3 [label = <<table border="0"><tr><td>Välitulos 3</td></tr><hr/><tr><td>("kissa", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		combined_intermediate1 [label =  <<table border="0"><tr><td>Yhdistetty välitulos 1</td></tr><hr/><tr><td>("kissa", 2)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		combined_intermediate2 [label =  <<table border="0"><tr><td>Yhdistetty välitulos 2</td></tr><hr/><tr><td>("koira", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+	}
+
+	subgraph cluster_maptask2 {
+		label = <<i>Map</i>-laskentatehtävä 2>;
+        style = "filled";
+        color = "lightgrey";
+        node [style = "filled"; color = "white"];
+		split2 [label = <<table border="0"><tr><td>Jako 2</td></tr><hr/><tr><td>(3, "tilhi kettu...")<br/>(4, "hauki lahna...")</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		intermediate4 [label = <<table border="0"><tr><td>Välitulos 4</td></tr><hr/><tr><td>("kissa", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		intermediate5 [label = <<table border="0"><tr><td>Välitulos 5</td></tr><hr/><tr><td>("koira", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black" ];
+		intermediate6 [label = <<table border="0"><tr><td>Välitulos 6</td></tr><hr/><tr><td>("kissa", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		combined_intermediate3 [label =  <<table border="0"><tr><td>Yhdistetty välitulos 3</td></tr><hr/><tr><td>("kissa", 2)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		combined_intermediate4 [label =  <<table border="0"><tr><td>Yhdistetty välitulos 4</td></tr><hr/><tr><td>("koira", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+	}
+
+	subgraph cluster_reducetask1 {
+		label = <<i>Reduce</i>-laskentatehtävä 1>
+        style = "filled";
+        color = "lightgrey";
+        node [style = "filled"; color = "white"];
+		partition1 [label = <<table border="0"><tr><td>Osa 1</td></tr><hr/><tr><td>("kissa", 2)<br/>("kissa", 2)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		result1 [label = <<table border="0"><tr><td>Tulos 1</td></tr><hr/><tr><td>("kissa", 4)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+	}
+
+	subgraph cluster_reducetask2 {
+		label = <<i>Reduce</i>-laskentatehtävä 2>
+        style = "filled";
+        color = "lightgrey";
+        node [style = "filled"; color = "white"];
+		partition2 [label = <<table border="0"><tr><td>Osa 2</td></tr><hr/><tr><td>("koira", 1)<br/>("koira", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		result2 [label = <<table border="0"><tr><td>Tulos 2</td></tr><hr/><tr><td>("koira", 2)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+	}
+
+	split1 -> intermediate1; 
+	split1 -> intermediate2;
+	split1 -> intermediate3;
+	split2 -> intermediate4;
+	split2 -> intermediate5;
+	split2 -> intermediate6;
+
+	intermediate1 -> combined_intermediate1;
+	intermediate2 -> combined_intermediate2;
+	intermediate3 -> combined_intermediate1;
+	intermediate4 -> combined_intermediate3;
+	intermediate5 -> combined_intermediate4;
+	intermediate6 -> combined_intermediate3;
+
+	combined_intermediate1 -> partition1;
+	combined_intermediate2 -> partition2;
+	combined_intermediate3 -> partition1;
+	combined_intermediate4 -> partition2;
+
+	partition1 -> result1;
+	partition2 -> result2;
+}

@@ -85,6 +85,8 @@ Edellä esitettyä MapReduce-operaation suoritusta voidaan laajentaa eri tavoin.
 
 ## Combiner
 
+![MapReduce-laskentatehtävä *Combiner*-vaiheella varustettuna. *Map*- ja *reduce*-laskentatehtävän välillä on vähemmän kommunikaatiota kuin Kuvassa 2.](dist/combiner)
+
 MapReduce-ohjelmointimallin esittelevässä artikkelissa [@mapreduce] esitellään myös optimointi, joka lisää MapReduce-operaatioon uuden vaiheen nimeltään *combiner*. *Combiner*-vaiheen käyttö nopeuttaa *MapReduce*-operaation suoritusta erityisesti tilanteissa, joissa saman avaimen omaavia välituloksia on paljon. Käytetään esimerkkinä yhtä *map*-laskentatehtävää ja sen laskemina välituloksina samoja välituloksia, mitä aiemmin käytettiin koko *map*-vaiheen jälkeisinä välituloksina:
 $$
 (kissa, 1), (kissa, 1), (kissa, 1), (kissa, 1), (koira, 1), (koira, 1)

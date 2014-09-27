@@ -18,7 +18,13 @@ dist/mapreduce-operation.svg: dist-dir src/images/mapreduce-operation.dot
 dist/mapreduce-operation.pdf: dist-dir src/images/mapreduce-operation.dot
 	dot src/images/mapreduce-operation.dot -Tpdf -o dist/mapreduce-operation.pdf
 
-dist/kandi.pdf: dist-dir $(sources) dist/map-and-reduce.pdf dist/mapreduce-operation.pdf
+dist/combiner.svg: dist-dir src/images/combiner.dot
+	dot src/images/combiner.dot -Tsvg -o dist/combiner.svg
+
+dist/combiner.pdf: dist-dir src/images/combiner.dot
+	dot src/images/combiner.dot -Tpdf -o dist/combiner.pdf
+
+dist/kandi.pdf: dist-dir $(sources) dist/map-and-reduce.pdf dist/mapreduce-operation.pdf dist/combiner.pdf
 	mkdir -p dist
 
 	pandoc -o dist/kandi.pdf \
@@ -32,7 +38,7 @@ dist/kandi.pdf: dist-dir $(sources) dist/map-and-reduce.pdf dist/mapreduce-opera
 		-V abstract="$(abstract)" \
 		src/kandi.md
 
-dist/kandi.html: $(sources) dist/map-and-reduce.svg dist/mapreduce-operation.svg
+dist/kandi.html: $(sources) dist/map-and-reduce.svg dist/mapreduce-operation.svg dist/combiner.svg
 	mkdir -p dist
 
 	pandoc -o dist/kandi.html \
