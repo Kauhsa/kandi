@@ -10,7 +10,7 @@ Tutkielma esittelee MapReduce-ohjelmointimallin, joka on menetelmä käsitellä 
 
 # MapReduce-ohjelmointimalli
 
-MapReduce on Googlen vuonna 2003 kehittämä ohjelmointimalli [@mapreduce2, s. 72], jota käytetään suurten tietomäärien käsittelyyn ja tuottamiseen [@mapreduce s. 107]. Ohjelmointimallin tarkoituksena on vähentää hajautetun laskennan monimutkaisuutta tarjoamalla useaan hajautetun laskennan sovellukseen soveltuva abstraktio [@mapreduce, s. 72]. Hyödyntämällä sovelluksessaan MapReduce-ohjelmointimallin toteutusta ohjelmoijan ei tarvitse huolehtia monista hajautettuun laskentaan liittyvistä yksityiskohdista, kuten vikasietoisuudesta tai datan hajauttamisesta [@mapreduce, s. 72]. Eräs tunnettu MapReduce-ohjelmointimallin toteutus on avoimen lähdekoodin Apache Hadoop -projekti, jonka käyttäjiin kuuluvat muun muassa Facebook ja Yahoo! [@hive].
+MapReduce on Googlen vuonna 2003 kehittämä ohjelmointimalli [@mapreduce2 s. 72], jota käytetään suurten tietomäärien käsittelyyn ja tuottamiseen [@mapreduce s. 107]. Ohjelmointimallin tarkoituksena on vähentää hajautetun laskennan monimutkaisuutta tarjoamalla useaan hajautetun laskennan sovellukseen soveltuva abstraktio [@mapreduce, s. 72]. Hyödyntämällä sovelluksessaan MapReduce-ohjelmointimallin toteutusta ohjelmoijan ei tarvitse huolehtia monista hajautettuun laskentaan liittyvistä yksityiskohdista, kuten vikasietoisuudesta tai datan hajauttamisesta [@mapreduce, s. 72]. Eräs tunnettu MapReduce-ohjelmointimallin toteutus on avoimen lähdekoodin Apache Hadoop -projekti, jonka käyttäjiin kuuluvat muun muassa Facebook ja Yahoo! [@hive].
 
 MapReduce-ohjelmointimallissa käyttäjä toteuttaa kaksi funktiota, joita kutsutaan nimillä *map* ja *reduce*. Funktiot ovat funktionaalisessa ohjelmoinnissa esiintyvien samannimisten funktioiden inspiroimia [@mapreduce, s. 107], mutta eivät suoraan vastaa näitä funktioita [@mapreduce-revisited, s. 5]. Funktiota *map* käytetään tekemään jokin operaatio jokaiselle syötteen alkiolle erikseen, ja funktiota *reduce* käytetään yhdistämään tämä käsitellyt alkiot yhdeksi tulokseksi.
 
@@ -63,13 +63,11 @@ $$
 
 ![Mahdollinen MapReduce-laskentatehtävän syöte, välitulokset ja lopullinen tulos](dist/map-and-reduce)
 
-Usein MapReduce-laskentatehtäviä halutaan ketjuttaa, käyttäen saatua tulosta uuden MapReduce-laskentatehtävän syötteenä [@mapreduce s. 109].
-
 Kuva 1 esittelee toisen mahdollisen syötteen, välituloksen ja tuloksen käyttäen määrittelemiämme *map*- ja *reduce*-funktioita.
 
 ## MapReduce-ohjelman suorituksen kulku
 
-![MapReduce-laskentatehtävän suorituksen kulku](dist/mapreduce-operation)
+![MapReduce-laskentatehtävän suorituksen kulku. Toisin kuin kuva näyttää, yhteen osaan on mahdollista kuulua enemmän kuin yhden avaimen omaavia välituloksia.](dist/mapreduce-operation)
 
 Googlen esittelemässä MapReduce-ohjelmointimallin toteutuksessa ohjelman suoritus alkaa käynnistämällä käyttäjän ohjelmasta kopio kaikilla laskentaan osallistuvilla tietokoneilla. Yksi näistä kopioista on *isäntäprosessi* (master), joka koordinoi laskennan kulkua. Muut ohjelman kopiot ovat varsinaisen laskennan suorittavia *työprosesseja* (worker).
 
@@ -77,9 +75,9 @@ Jos syöte ei ole jo sopivan kokoisina palasina, se jaetaan. Näitä palasia kut
 
 *Map*-laskentatehtävien tuloksena saatavista välituloksista muodostetaan *osia* (partition). Jokainen yksittäinen välitulos tallennetaan johonkin osaan, joka valitaan soveltamalla *hajautusfunktiota* välituloksen avaimeen. Näin saadaan aikaan osia, joissa eri avaimet ovat jakautuneet tasaisesti eri osien kesken ja joissa kaikki saman avaimen välitulokset ovat samassa osassa.
 
-Jokaisesta partitiosta muodostetaan *reduce*-laskentatehtävä. *Map*-laskentatehtävien tavoin *reduce*-laskentatehtävät sijoitetaan työprosessien laskettaviksi isäntäprosessin toimesta. Ennen *reduce*-funktion soveltamista välituloksiin työprosessi järjestää yhden osan välitulokset avaimen mukaan. Näin välitulokset joilla on sama avain ovat osan sisällä peräkkäin, ja avaimia voidaan käsitellä *reduce*-funktiolla yksi kerrallaan. Kun *reduce*-operaatio on yhden avaimen osalta valmis, tämä tulos on valmis tallennettavaksi.
+Jokaisesta osasta muodostetaan *reduce*-laskentatehtävä. *Map*-laskentatehtävien tavoin *reduce*-laskentatehtävät sijoitetaan työprosessien laskettaviksi isäntäprosessin toimesta. Ennen *reduce*-funktion soveltamista välituloksiin työprosessi järjestää yhden osan välitulokset avaimen mukaan. Näin välitulokset joilla on sama avain ovat osan sisällä peräkkäin, ja avaimia voidaan käsitellä *reduce*-funktiolla yksi kerrallaan. Kun *reduce*-operaatio on yhden avaimen osalta valmis, tulos on valmis tallennettavaksi.
 
-MapReduce-ohjelmointimalli ei rajoita miten syöte ladataan tai tulos tallennetaan. Syötteenä voidaan esimerkiksi käyttää joukkoa tiedostojärjestelmässä olevia tiedostoja, mutta ohjelmointimallin toteutus voi lisäksi mahdollistaa esimerkiksi tietokannan käytön syötteen lataamiseen ja tuloksen tallentamiseen [@mapreduce2, s. 74]. Tiedostojen hallintaan voidaan myös käyttää *hajautettua tiedostojärjestelmää*, joka skaalautuu tietokoneiden määrän mukaan. Googlen esittelemä toteutus käyttää niin ikään Googlen kehittämää hajautettua tiedostojärjestelmää nimeltään *Google File System* (GFS) [@mapreduce], kun taas Apache Hadoop -projektiin kuuluu hajautettu tiedostojärjestelmä *Hadoop Distributed File System* (HDFS) [@hdfs]. Molemmissa hajautetuissa tiedostojärjestelmissä tiedostot jaetaan tiedostojärjestelmän tietoa säilövien tietokoneiden kesken.
+MapReduce-ohjelmointimalli ei rajoita miten syöte ladataan tai tulos tallennetaan. Syötteenä voidaan esimerkiksi käyttää joukkoa tiedostojärjestelmässä olevia tiedostoja, mutta ohjelmointimallin toteutus voi lisäksi mahdollistaa esimerkiksi tietokannan käytön syötteen lataamiseen ja tuloksen tallentamiseen [@mapreduce2, s. 74]. Usein MapReduce-laskentatehtäviä halutaan ketjuttaa, käyttäen saatua tulosta uuden MapReduce-laskentatehtävän syötteenä [@mapreduce s. 109].
 
 # MapReducen optimointi
 

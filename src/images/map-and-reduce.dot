@@ -5,7 +5,7 @@ digraph {
         label = "Syöte";
         style = "filled";
         color = "lightgrey";
-        node [shape = "box"; style = "filled"; color = "white"];
+        node [shape = "box"; style = "filled"; color = "black"; fillcolor="white"];
         dok1[label = <(dokumentti 1,<br/>"kissa koira <br/> vene hauki <br/> kissa")>];
         dok2[label = <(dokumentti 2,<br/>"koira vene <br/> kissa pihvi")>];
     }
@@ -17,7 +17,7 @@ digraph {
         label = "Välitulokset";
         style = "filled";
         color = "lightgrey";
-        node [shape = "box"; style = "filled"; color = "white"];
+        node [shape = "box"; style = "filled"; color = "black"; fillcolor="white"];      
         kissa1[label = "(kissa, 1)"];
         kissa2[label = "(kissa, 1)"];
         kissa3[label = "(kissa, 1)"];
@@ -32,7 +32,7 @@ digraph {
         label = "Tulos";
         style = "filled";
         color = "lightgrey";
-        node [shape = "box"; style = "filled"; color = "white"];
+        node [shape = "box"; style = "filled"; color = "black"; fillcolor="white"];
         res_kissa[label = "(kissa, 3)"];
         res_koira[label = "(koira, 2)"];
     }

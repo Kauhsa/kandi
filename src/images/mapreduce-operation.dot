@@ -1,14 +1,17 @@
 digraph {
 	rankdir = LR;
 
+	input [label = <<table border="0"><tr><td>Syöte</td></tr><hr/><tr><td>(1, "koira norsu...")<br/>(2, "kissa mursu...")<br/>(3, "tilhi kettu...")<br/>(4, "hauki lahna...")<br/>(5, "närhi kissa...")<br/>(6, "koira kissa...")</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+	
 	subgraph cluster_maptask1 {
 		label = <<i>Map</i>-laskentatehtävä 1>;
         style = "filled";
         color = "lightgrey";
         node [style = "filled"; color = "white"];
-		split1 [label = "Jako 1"; shape = "box"];
-		intermediate1 [label = "Välitulos 1"];
-		intermediate2 [label = "Välitulos 2"];
+		split1 [label = <<table border="0"><tr><td>Jako 1</td></tr><hr/><tr><td>(1, "koira norsu...")<br/>(2, "kissa mursu...")</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		intermediate1 [label = <<table border="0"><tr><td>Välitulos 1</td></tr><hr/><tr><td>("kissa", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		intermediate2 [label = <<table border="0"><tr><td>Välitulos 2</td></tr><hr/><tr><td>("koira", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black" ];
+		intermediate3 [label = <<table border="0"><tr><td>Välitulos 3</td></tr><hr/><tr><td>("kissa", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
 	}
 	
 	subgraph cluster_maptask2 {
@@ -16,9 +19,10 @@ digraph {
         style = "filled";
         color = "lightgrey";
         node [style = "filled"; color = "white"];
-		split2 [label = "Jako 2"; shape = "box"];
-		intermediate3 [label = "Välitulos 3"];
-		intermediate4 [label = "Välitulos 4"];
+		split2 [label = <<table border="0"><tr><td>Jako 2</td></tr><hr/><tr><td>(3, "tilhi kettu...")<br/>(4, "hauki lahna...")</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		intermediate4 [label = <<table border="0"><tr><td>Välitulos 4</td></tr><hr/><tr><td>("kissa", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		intermediate5 [label = <<table border="0"><tr><td>Välitulos 5</td></tr><hr/><tr><td>("koira", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black" ];
+		intermediate6 [label = <<table border="0"><tr><td>Välitulos 6</td></tr><hr/><tr><td>("kissa", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
 	}
 	
 	subgraph cluster_maptask3 {
@@ -26,9 +30,10 @@ digraph {
         style = "filled";
         color = "lightgrey";
         node [style = "filled"; color = "white"];
-		split3 [label = "Jako 3"; shape = "box"];
-		intermediate5 [label = "Välitulos 5"];
-		intermediate6 [label = "Välitulos 6"];
+		split3 [label = <<table border="0"><tr><td>Jako 3</td></tr><hr/><tr><td>(5, "närhi kissa...")<br/>(6, "koira kissa...")</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		intermediate7 [label = <<table border="0"><tr><td>Välitulos 7</td></tr><hr/><tr><td>("kissa", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		intermediate8 [label = <<table border="0"><tr><td>Välitulos 8</td></tr><hr/><tr><td>("koira", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black" ];
+		intermediate9 [label = <<table border="0"><tr><td>Välitulos 9</td></tr><hr/><tr><td>("kissa", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
 	}
 
 	subgraph cluster_reducetask1 {
@@ -36,8 +41,8 @@ digraph {
         style = "filled";
         color = "lightgrey";
         node [style = "filled"; color = "white"];
-		partition1 [label = "Osa 1"; shape = "box"];
-		result1 [label = "Tulos 1"];
+		partition1 [label = <<table border="0"><tr><td>Osa 1</td></tr><hr/><tr><td>("kissa", 1)<br/>("kissa", 1)<br/>("kissa", 1)<br/>("kissa", 1)<br/>("kissa", 1)<br/>("kissa", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		result1 [label = <<table border="0"><tr><td>Tulos 1</td></tr><hr/><tr><td>("kissa", 6)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
 	}
 
 	subgraph cluster_reducetask2 {
@@ -45,17 +50,8 @@ digraph {
         style = "filled";
         color = "lightgrey";
         node [style = "filled"; color = "white"];
-		partition2 [label = "Osa 2"; shape = "box"];
-		result2 [label = "Tulos 2"];
-	}
-
-	subgraph cluster_reducetask3 {
-		label = <<i>Reduce</i>-laskentatehtävä 3>
-        style = "filled";
-        color = "lightgrey";
-        node [style = "filled"; color = "white"];
-		partition3 [label = "Osa 3"; shape = "box"];
-		result3 [label = "Tulos 3"];
+		partition2 [label = <<table border="0"><tr><td>Osa 2</td></tr><hr/><tr><td>("koira", 1)<br/>("koira", 1)<br/>("koira", 1)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
+		result2 [label = <<table border="0"><tr><td>Tulos 2</td></tr><hr/><tr><td>("koira", 3)</td></tr></table>>; shape="box"; style="filled"; fillcolor = "white"; color = "black"];
 	}
 
 	input -> split1; 
@@ -64,19 +60,24 @@ digraph {
 
 	split1 -> intermediate1; 
 	split1 -> intermediate2;
-	split2 -> intermediate3;
+	split1 -> intermediate3;
 	split2 -> intermediate4;
-	split3 -> intermediate5;
-	split3 -> intermediate6;
+	split2 -> intermediate5;
+	split2 -> intermediate6;
+	split3 -> intermediate7;
+	split3 -> intermediate8;
+	split3 -> intermediate9;
 
 	intermediate1 -> partition1;
-	intermediate2 -> partition1;
+	intermediate2 -> partition2;
 	intermediate3 -> partition1;
-	intermediate4 -> partition2;
+	intermediate4 -> partition1;
 	intermediate5 -> partition2;
-	intermediate6 -> partition3;
+	intermediate6 -> partition1;
+	intermediate7 -> partition1;
+	intermediate8 -> partition2;
+	intermediate9 -> partition1;
 
 	partition1 -> result1;
 	partition2 -> result2;
-	partition3 -> result3;
 }
