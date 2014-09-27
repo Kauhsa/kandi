@@ -46,7 +46,7 @@ dist/kandi.html: $(sources) dist/map-and-reduce.svg dist/mapreduce-operation.svg
 		--standalone \
 		--self-contained \
 		--toc \
-		--mathjax \
+		--mathjax="" \
 		--default-image-extension svg \
 		--biblio src/lahteet.bib \
 		--csl templates/ieee.csl \
