@@ -87,7 +87,7 @@ Edellä esitettyä MapReduce-operaation suoritusta voidaan laajentaa eri tavoin.
 
 ![MapReduce-laskentatehtävä *Combiner*-vaiheella varustettuna. *Map*- ja *reduce*-laskentatehtävien välillä on vähemmän kommunikaatiota kuin kuvassa 2.](dist/combiner)
 
-MapReduce-ohjelmointimallin esittelevässä artikkelissa [@mapreduce] esitellään myös optimointi, joka lisää MapReduce-operaatioon uuden vaiheen nimeltään *combiner*. *Combiner*-vaiheen käyttö nopeuttaa *MapReduce*-operaation suoritusta erityisesti tilanteissa, joissa saman avaimen omaavia välituloksia on paljon. Käytetään esimerkkinä yhtä *map*-laskentatehtävää ja sen laskemina välituloksina samoja välituloksia, mitä aiemmin käytettiin koko *map*-vaiheen jälkeisinä välituloksina:
+MapReduce-ohjelmointimallin esittelevässä artikkelissa [@mapreduce] esitellään myös optimointi, joka lisää MapReduce-operaatioon uuden vaiheen nimeltään *combiner*. *Combiner*-vaiheen käyttö nopeuttaa *MapReduce*-operaation suoritusta erityisesti tilanteissa, joissa saman avaimen omaavia välituloksia on paljon. Optimoinnin ideana on vähentää mahdollisesti eri tietokoneella laskettavien *map*- ja *reduce*-laskentatehtävien välistä kommunikaatiota. Käytetään esimerkkinä yhtä *map*-laskentatehtävää ja sen laskemina välituloksina samoja välituloksia, mitä aiemmin käytettiin koko *map*-vaiheen jälkeisinä välituloksina:
 $$
 (kissa, 1), (kissa, 1), (kissa, 1), (kissa, 1), (koira, 1), (koira, 1)
 $$
@@ -103,6 +103,18 @@ $$
 $$
 
 Jos yhden *map*-laskentatehtävän välitulosten yhdistäminen *combiner*-funktion avulla tehdään samalla tietokoneella kuin itse *map*-laskentatehtävä, verkon yli lähetettävien välitulosten määrä vähenee.
+
+*Combiner*-funktiona voidaan usein käyttää *reduce*-funktioksi määriteltyä funktiota, mutta sopiva funktio riippuu laskentatehtävästä. Käytetään esimerkkinä *combiner*-funktioksi soveltumattomasta *reduce*-funktiosta funktiota, joka yhdistää välitulokset laskien kuinka monta *kissa*- tai *koira*-sanaa tarvitaan, jotta niiden lukumääräksi saataisiin sata.
+
+```python
+def reduce(avain, arvot):
+	tarvitaan = 100
+	for arvo in arvot:
+		tarvitaan -= arvo
+	emit(tarvitaan)
+```
+
+Käyttämällä tätä funktiota *reduce*-funktion lisäksi *combiner*-funktiona tulokset olisivat virheellisiä, mutta käyttämällä luvussa 2.1. määrittelemäämme *reduce*-funktiota *combiner*-funktiona laskentatehtävän tulos pysyisi oikeana.
 
 ## Indeksien käyttäminen
 
