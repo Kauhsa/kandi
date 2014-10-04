@@ -79,13 +79,13 @@ Jokaisesta osasta muodostetaan *reduce*-laskentatehtävä. *Map*-laskentatehtäv
 
 MapReduce-ohjelmointimalli ei rajoita miten syöte ladataan tai tulos tallennetaan. Syötteenä voidaan esimerkiksi käyttää joukkoa tiedostojärjestelmässä olevia tiedostoja, mutta ohjelmointimallin toteutus voi lisäksi mahdollistaa esimerkiksi tietokannan käytön syötteenä tai tuloksen tallennuskohteena [@mapreduce2, s. 74]. Usein MapReduce-laskentatehtäviä halutaan ketjuttaa, käyttäen saatua tulosta uuden MapReduce-laskentatehtävän syötteenä [@mapreduce s. 109].
 
-# MapReducen optimointi
+# MapReducen optimointeja
 
 Edellä esitettyä MapReduce-operaation suoritusta voidaan laajentaa eri tavoin. Näin voidaan parantaa jotain MapReduce-ohjelmointimallin osa-aluetta, mahdollisesti tehostaen tietynlaisten laskentatehtävien suorituskykyä merkittävästi.
 
 ## Combiner
 
-![MapReduce-laskentatehtävä *Combiner*-vaiheella varustettuna. *Map*- ja *reduce*-laskentatehtävien välillä on vähemmän kommunikaatiota kuin kuvassa 2.](dist/combiner)
+![MapReduce-laskentatehtävä *combiner*-vaiheella varustettuna. *Map*- ja *reduce*-laskentatehtävien välillä on vähemmän kommunikaatiota kuin kuvassa 2.](dist/combiner)
 
 MapReduce-ohjelmointimallin esittelevässä artikkelissa [@mapreduce] esitellään myös optimointi, joka lisää MapReduce-operaatioon uuden vaiheen nimeltään *combiner*. *Combiner*-vaiheen käyttö nopeuttaa *MapReduce*-operaation suoritusta erityisesti tilanteissa, joissa saman avaimen omaavia välituloksia on paljon. Optimoinnin ideana on vähentää mahdollisesti eri tietokoneella laskettavien *map*- ja *reduce*-laskentatehtävien välistä kommunikaatiota. Käytetään esimerkkinä yhtä *map*-laskentatehtävää ja sen laskemina välituloksina samoja välituloksia, mitä aiemmin käytettiin koko *map*-vaiheen jälkeisinä välituloksina:
 $$
@@ -127,6 +127,24 @@ Richer ja kumppanit esittelevät artikkelissaan [@hail] Apache Hadoop -projektin
 Käyttäjä voi hyödyntää indeksiä esimerkiksi määrittelemällä *map*-funktion yhteyteen suodattimen, jolloin *map*-laskentatehtävä saa syötteekseen vain suodattimen hyväksymiä tietueita. Koska indeksistä tietueiden hakeminen on nopeaa, on indeksin käyttäminen suodatuksessa tehokkaampaa kuin datan suodattaminen vasta *map*-laskentatehtävän yhteydessä. Artikkelissa esiteltyjen tuloksien mukaan datan siirtoon käytetyn HAIL-asiakasohjelman tehokkuuden vuoksi staattinen indeksointi datan siirtämisen yhteydessä ei ole hitaampaa kuin Hadoop-projektin mukana tulevan asiakasohjelman käyttö datan siirtämiseen. Varsinaisen Hadoop-laskentatehtävän suorituskykyä indeksin käyttäminen paransi 64-kertaisesti.
 
 Varsinaisesti muuttamatta MapReduce-laskentatehtävien toimintaa indeksointia voi hyödyntää käyttämällä syötteenä esimerkiksi indeksejä hyödyntävän tietokannan kyselyjen tuloksia [@mapreduce2].
+
+# MapReducen sovellus: PageRank
+
+PageRank on algoritmi, joka järjestää internet-sivuja tärkeysjärjestykseen niihin osoittavien linkkien perusteella [@pagerank]. Algoritmin ajatuksena on, että usein viitatut internet-sivut ovat tärkeämpiä kuin sellaiset, joihin viitataan toisilla internet-sivuilla vähemmän. Mitä tärkeämpi sivu on ja mitä vähemmän sivulla on linkkejä, sitä enemmän sen viittauksilla on vaikutusta viitattujen sivun PageRank-arvoon. Google-hakukone rakennettiin alun perin PageRank-algoritmin testaamista varten, ja PageRank-arvot ovat nykyäänkin yksi sivujen tärkeysjärjestykseen vaikuttavista tekijöistä. 
+
+Määritellään PageRank-algoritmin yksinkertaistettu versio. Olkoon $s$ jokin internet-sivu, ja $V_s$ sivuun $s$ viittaavien sivujen joukko. Nyt internet-sivun $s$ PageRank on:
+
+$$
+PageRank(s) = \sum_{v \in V_s} \frac {PageRank(v)} {linkkienMaaraSivulla(v)}
+$$
+
+Internet-sivujoukon PageRank-arvot voidaan laskea *iteratiivisesti*:
+
+1. Aseta jokaiselle sivulle PageRank-arvoksi jokin vakio, esimerkiksi 1.
+2. Laske jokaiselle sivulle uusi PageRank-arvo, käyttäen yllä esitettyä kaavaa.
+3. Toista kohtaa 2, kunnes ollaan tehty haluttu määrä iteraatioita tai muutokset iteraatioiden välillä ovat tarpeeksi pienet.
+
+![Otos sivuista, niiden PageRank-arvoista ja viittausten vaikutuksista sivujen PageRank-arvoon.](dist/pagerank)
 
 # Muut hajautetun laskennan ratkaisut
 
