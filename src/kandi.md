@@ -130,21 +130,68 @@ Varsinaisesti muuttamatta MapReduce-laskentatehtävien toimintaa indeksointia vo
 
 # MapReducen sovellus: PageRank
 
-PageRank on algoritmi, joka järjestää internet-sivuja tärkeysjärjestykseen niihin osoittavien linkkien perusteella [@pagerank]. Algoritmin ajatuksena on, että usein viitatut internet-sivut ovat tärkeämpiä kuin sellaiset, joihin viitataan toisilla internet-sivuilla vähemmän. Mitä tärkeämpi sivu on ja mitä vähemmän sivulla on linkkejä, sitä enemmän sen viittauksilla on vaikutusta viitattujen sivun PageRank-arvoon. Google-hakukone rakennettiin alun perin PageRank-algoritmin testaamista varten, ja PageRank-arvot ovat nykyäänkin yksi sivujen tärkeysjärjestykseen vaikuttavista tekijöistä. 
+PageRank on algoritmi, joka järjestää Internet-sivuja tärkeysjärjestykseen niihin osoittavien linkkien perusteella [@pagerank]. Algoritmin ajatuksena on, että usein viitatut Internet-sivut ovat tärkeämpiä kuin sellaiset, joihin viitataan toisilla Internet-sivuilla vähemmän. Mitä tärkeämpi sivu on ja mitä vähemmän sivulla on linkkejä, sitä enemmän sen viittauksilla on vaikutusta viitattujen sivun PageRank-arvoon. Google-hakukone rakennettiin alun perin PageRank-algoritmin testaamista varten [@pagerank]. 
 
-Määritellään PageRank-algoritmin yksinkertaistettu versio. Olkoon $s$ jokin internet-sivu, ja $V_s$ sivuun $s$ viittaavien sivujen joukko. Nyt internet-sivun $s$ PageRank on:
-
+Määritellään PageRank-algoritmin yksinkertaistettu versio. Olkoon $s$ jokin Internet-sivu, ja $V_s$ sivuun $s$ viittaavien sivujen joukko. Internet-sivun $s$ PageRank on:
 $$
 PageRank(s) = \sum_{v \in V_s} \frac {PageRank(v)} {linkkienMaaraSivulla(v)}
 $$
 
-Internet-sivujoukon PageRank-arvot voidaan laskea *iteratiivisesti*:
+![Otos sivuista, niiden PageRank-arvoista, ja viittausten vaikutuksista sivujen PageRank-arvoon.](dist/pagerank)
+
+PageRank-arvot lasketaan tyypillisesti käyttäen *iteratiivista menetelmää* [@pagerank-mapreduce], jolloin jokainen iteraatio tarkentaa sivujen PageRank-arvoja. Esimerkkinä iteratiivisesta menetelmästä on seuraava algoritmi, joka laskee PageRank-arvon yksinkertaistetun version jollekin joukolle sivuja:
 
 1. Aseta jokaiselle sivulle PageRank-arvoksi jokin vakio, esimerkiksi 1.
-2. Laske jokaiselle sivulle uusi PageRank-arvo, käyttäen yllä esitettyä kaavaa.
+2. Laske jokaiselle sivulle uusi PageRank-arvo käyttäen yllä esitettyä kaavaa siten, että laskettaessa uutta iteraatiota käytetään viime iteraation PageRank-arvoja.
+
+	$$
+	uusiPageRank(s) = \sum_{v \in V_s} \frac {edellinenPageRank(v)} {linkkienMaaraSivulla(v)}
+	$$
+
 3. Toista kohtaa 2, kunnes ollaan tehty haluttu määrä iteraatioita tai muutokset iteraatioiden välillä ovat tarpeeksi pienet.
 
-![Otos sivuista, niiden PageRank-arvoista ja viittausten vaikutuksista sivujen PageRank-arvoon.](dist/pagerank)
+Toteutetaan tämän iteratiivisen algoritmin kohta 2. käyttäen MapReduce-ohjelmointimallia. Määritellään ensin, minkälaisen syötteen MapReduce-ohjelmamme saa. Algoritmi tarvitsee tiedon jokaisesta Internet-sivusta, niiden nykyisistä PageRank-arvoista sekä listan viittauksista toisiin Internet-sivuihin. Syötteeseen saadaan kaikki tarvittava sisältö määrittelemällä syöte niin, että syötteen avaimena on jokin sivun yksilöivä tunniste ja arvona pari, jonka ensimmäinen alkio on sivun nykyinen PageRank-arvo ja toinen alkio sivulta löytyvät viittaukset. Esitetään nämä viittaukset listana sivuja yksilöiviä tunnisteita.
+
+```python
+def map(sivu_id, (page_rank, viittaukset)):
+	pr_per_viittaus = page_rank / len(viittaukset)
+	for viittaus in viittaukset:
+		emit(viittaus, pr_per_viittaus)
+```
+
+*Map*-funktio luo jokaisesta sivun viittaamasta toisesta sivusta välituloksen, jonka avaimena on viitatun sivun tunniste ja arvona viittavan sivun vaikutus viitatun sivun PageRank-arvoon. Nyt *reduce*-funktion tehtäväksi jää yhdistää nämä osittaiset PageRank-arvot: 
+
+```python
+def reduce(sivu, arvot):
+	page_rank = 0
+	for arvo in arvot:
+		page_rank += arvo
+	emit(sivu, page_rank)
+```
+
+MapReduce-ohjelmamme laskee nyt jokaiselle sivulle uuden PageRank-arvon ja täten suorittaa yhden iteraation aiemmin kuvailemastamme iteratiivisesta algoritmista. Algoritmissa on kuitenkin pieni ongelma – se hävittää tiedot sivujen viittauksista toisiin sivuihin. Niinpä ohjelman tulosta ei voi käyttää suoraan uuden iteraation syötteenä. Koska algoritmi on iteratiivinen, mahdollisuus käynnistää uusi iteraatio käyttäen syötteenä aiemman iteraation tulosta on toivottu ominaisuus.
+
+Ongelmaan on useampi ratkaisu. Koska sivujen väliset viittaukset eivät muutu iteraatioiden välillä, ei ole välttämättä mielekästä säilyttää tätä tietoa syötteessä lainkaan. Sen sijaan tiedot sivujen välisistä viittauksista voidaan siirtää kaikille työläisprosessien tietokoneille ennen iteraatioiden aloittamista, jolloin *map*-laskentatehtävät voivat lukea tiedot sivujen välisistä viittauksista varsinaisen MapReduce-laskentatehtävässä käytetyn syötteen ulkopuolelta.
+
+Mikäli näin ei haluta tai voida menetellä, voidaan muuttaa määrittelemiämme *map*- ja *reduce* niin, että tiedot sivujen välisistä viittauksista eivät häviä. Tämä voidaan toteuttaa esimerkiksi käyttämällä kahden eri tyyppisiä välituloksen arvoja, joista toinen ilmaisee viittausta johonkin sivuun ja toinen PageRank-vaikutusta.
+
+```python
+def map(sivu_id, (page_rank, viittaukset)):
+	pr_per_viittaus = page_rank / len(viittaukset)
+	for viittaus in viittaukset:
+		emit(viittaus, PageRank(pr_per_viittaus))
+		emit(sivu_id, Viittaus(viittaus))
+
+def reduce(sivu_id, arvot):
+	page_rank = 0
+	viittaukset = []
+	for arvo in arvot:
+		if type(arvo) == PageRank:
+			page_rank += arvo
+		elif type(arvo) == Viittaus:
+			viittaukset.append(arvo)
+	emit(sivu_id, (page_rank, viittaukset))
+```
 
 # Muut hajautetun laskennan ratkaisut
 
