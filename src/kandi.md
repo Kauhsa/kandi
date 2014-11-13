@@ -115,7 +115,7 @@ Varsinaisesti muuttamatta MapReduce-laskentatehtävien toimintaa indeksoinnin tu
 
 # MapReducen sovellus: PageRank
 
-PageRank on menetelmä, jolla voidaan järjestää Internet-sivuja tärkeysjärjestykseen niihin osoittavien linkkien perusteella [@pagerank]. Algoritmin ajatuksena on, että usein viitatut Internet-sivut ovat tärkeämpiä kuin vähemmän viitatut. Mitä tärkeämpi sivu on, sitä enemmän sen viittaukset nostavat viitattujen sivujen PageRank-arvoa. Google-hakukone sai alkunsa PageRank-menetelmästä [@pagerank]. Käytämme PageRank-menetelmää esimerkkinä hieman monimutkaisemmasta MapReduce-operaatiosta. 
+PageRank on menetelmä, jolla voidaan järjestää Internet-sivuja tärkeysjärjestykseen niihin osoittavien linkkien perusteella [@pagerank]. Algoritmin ajatuksena on, että usein viitatut Internet-sivut ovat tärkeämpiä kuin vähemmän viitatut. Mitä tärkeämpi sivu on, sitä enemmän sen viittaukset nostavat viitattujen sivujen PageRank-arvoa. Google-hakukone sai alkunsa PageRank-menetelmästä [@pagerank]. Käytämme PageRank-menetelmää esimerkkinä hieman monimutkaisemmasta MapReduce-operaatiosta.
 
 Määritellään PageRank-menetelmän yksinkertaistettu versio. Olkoon $s$ jokin Internet-sivu, ja $V_s$ sivuun $s$ viittaavien sivujen joukko. Internet-sivun $s$ PageRank on nyt:
 $$
@@ -179,6 +179,22 @@ def reduce(sivu_id, arvot):
 ```
 
 # Muut hajautetun laskennan ratkaisut
+
+## Hajautetut relaatiotietokantajärjestelmät
+
+Relaatiotietokantajärjestelmien ja SQL-kyselykielen suosion vuoksi saattaa olla houkuttelevaa käyttää kyseistä kyselykieltä myös suurien tietomäärien analysoinnissa – SQL saattaa olla ohjelmoijalle valmiiksi tuttu, tai kenties kehityksen kohteena oleva järjestelmä käyttää jo SQL-kyselykieltä hyödyntävää tietokantaa hyväkseen.
+
+Suurta tietomäärää käsiteltäessä yhden tietokoneen laskentakyvyt tulevat kuitenkin vastaan. On olemassa järjestelmiä, jotka luovat mahdollistavan kyselyjen ajamisen hajautetusti käyttäen useita, itsenäisiä relaatiotietokantajärjestelmäasennuksia eri tietokoneilla. Yksi esimerkki tälläisestä järjestelmästä on *pgpool-II*, joka toimii ylimääräisenä kerroksena PostgreSQL-asiakasohjelman ja PostgreSQL-palvelimien välissä [@pgpool-site]. Lisäksi on olemassa hajautusta varten suunniteltuja relaatiotietokantajärjestelmiä – tällainen on esimerkiksi *Vertica* [@vertica].
+
+MapReduce-ohjelmointimalli ja hajautettujen relaatiotietokantajärjestelmien käyttö eroaa muun muassa seuraavilla tavoilla:
+
+1. 	**Ohjelmointimalli**: MapReduce-ohjelmointimallin käyttäjä toteuttaa tiedon käsittelyn *map*- ja *reduce*-funktioiden avulla. Koska *map*- ja *reduce*-funktiot toteutetaan tavallisesti yleiskäyttöisellä ohjelmointikielellä, niiden sisältämälle logiikalle tai sisäiselle rakenteelle ei ole asetettu rajoituksia.
+
+	SQL-kyselykieli on yleiskäyttöisiä ohjelmointikieliä rajoittuneempi tiedon käsittelyyn suunniteltu kieli. Jos MapReduce-ohjelmointimallin funktiot kuvaavat *miten* tiedon käsittely tehdään, SQL-kyselykielellä luotujen kyselyjen voidaan ajatella kuvaavan *mitä* tiedon käsittelyn tulokseksi halutaan.
+
+2.	**Tiedon rakenne**: MapReduce-ohjelmointimalli ei ota kantaa syötteen tai tuloksen rakenteeseen. Relaatiotietokannat käyttävät tiedon ilmaisemiseen kaksiulotteisia tauluja, joiden rakenne määritellään ennen rivien lisäämistä tauluihin.
+
+Pavlo ja muut vertasivat artikkelissaan Hadoop-kirjaston suorituskykyä hajautettuihin relaatiotietokantajärjestelmiin 100 tietokoneen klusterilla. Suorituskykytesteissä *Vertican* havaittiin olevan keskimäärin noin 7 kertaa vastaavia Hadoop-ohjelmia tehokkaampi [@mapreduce-comparison]. Osasyyksi todetaan Hadoop-ohjelmien indeksoinnin puute – toisaalta, kuten kappaleessa 3.2 todetaan, myös MapReduce-sovellukset voivat hyödyntää indeksejä. Vertailu kertookin kenties enemmän Hadoop-kirjaston suorituskyvystä kuin MapReduce-ohjelmointimallista.
 
 # Yhteenveto
 
