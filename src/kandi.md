@@ -180,21 +180,45 @@ def reduce(sivu_id, arvot):
 
 # Muut hajautetun laskennan ratkaisut
 
+MapReduce-ohjelmointimalli ei ole ainoa tai ensimmäinen ratkaisu suurien tietomäärien käsittelyyn, ja toisaalta MapReduce-ohjelmointimalli on inspiroinut muita innoittajana. Tässä luvussa tutustutaan kahteen muuhun hajautetun laskennan ratkaisuun ja verrataan näitä ratkaisuja MapReduce-ohjelmointimalliin.
+
 ## Hajautetut relaatiotietokantajärjestelmät
 
-Relaatiotietokantajärjestelmien ja SQL-kyselykielen suosion vuoksi saattaa olla houkuttelevaa käyttää kyseistä kyselykieltä myös suurien tietomäärien analysoinnissa – SQL saattaa olla ohjelmoijalle valmiiksi tuttu, tai kenties kehityksen kohteena oleva järjestelmä käyttää jo SQL-kyselykieltä hyödyntävää tietokantaa hyväkseen.
+Relaatiotietokantajärjestelmien ja SQL-kyselykielen suosion vuoksi saattaa olla houkuttelevaa käyttää kyselykieltä myös suurien tietomäärien analysoinnissa – SQL saattaa olla ohjelmoijalle valmiiksi tuttu, tai kenties kehityksen kohteena oleva järjestelmä käyttää jo SQL-kyselykieltä hyödyntävää tietokantaa hyväkseen.
 
-Suurta tietomäärää käsiteltäessä yhden tietokoneen laskentakyvyt tulevat kuitenkin vastaan. On olemassa järjestelmiä, jotka luovat mahdollistavan kyselyjen ajamisen hajautetusti käyttäen useita, itsenäisiä relaatiotietokantajärjestelmäasennuksia eri tietokoneilla. Yksi esimerkki tälläisestä järjestelmästä on *pgpool-II*, joka toimii ylimääräisenä kerroksena PostgreSQL-asiakasohjelman ja PostgreSQL-palvelimien välissä [@pgpool-site]. Lisäksi on olemassa hajautusta varten suunniteltuja relaatiotietokantajärjestelmiä – tällainen on esimerkiksi *Vertica* [@vertica].
+Tiedon käsittely MapReduce-ohjelmointimallilla ja relaatiotietokantajärjestelmillä eroaa monin tavoin, muun muassa seuraavasti:
 
-MapReduce-ohjelmointimalli ja hajautettujen relaatiotietokantajärjestelmien käyttö eroaa muun muassa seuraavilla tavoilla:
+- 	**Ohjelmointimalli**: MapReduce-ohjelmointimallin käyttäjä toteuttaa tiedon käsittelyn *map*- ja *reduce*-funktioiden avulla. Koska *map*- ja *reduce*-funktiot toteutetaan tavallisesti yleiskäyttöisellä ohjelmointikielellä, niiden sisältämälle logiikalle tai sisäiselle rakenteelle ei ole asetettu rajoituksia. Relaatiotietokannassa tiedon käsittely tehdään SQL-kyselykielellä – tosin suurin osa tunnetuista relaatiotietokantajärjestelmistä tukee myös jonkinlaista proseduraalista ohjelmointikieltä.
 
-1. 	**Ohjelmointimalli**: MapReduce-ohjelmointimallin käyttäjä toteuttaa tiedon käsittelyn *map*- ja *reduce*-funktioiden avulla. Koska *map*- ja *reduce*-funktiot toteutetaan tavallisesti yleiskäyttöisellä ohjelmointikielellä, niiden sisältämälle logiikalle tai sisäiselle rakenteelle ei ole asetettu rajoituksia.
+-	**Tiedon rakenne**: MapReduce-ohjelmointimalli ei ota kantaa syötteen tai tuloksen rakenteeseen. Relaatiotietokannat käyttävät tiedon ilmaisemiseen kaksiulotteisia tauluja, joiden rakenne määritellään ennen kuin tietokantaan voidaan lisätä sisältöä.
 
-	SQL-kyselykieli on yleiskäyttöisiä ohjelmointikieliä rajoittuneempi tiedon käsittelyyn suunniteltu kieli. Jos MapReduce-ohjelmointimallin funktiot kuvaavat *miten* tiedon käsittely tehdään, SQL-kyselykielellä luotujen kyselyjen voidaan ajatella kuvaavan *mitä* tiedon käsittelyn tulokseksi halutaan.
+Pavlo ja muut vertasivat artikkelissaan Hadoop-kirjaston suorituskykyä hajautettuihin relaatiotietokantajärjestelmiin 100 tietokoneen klusterilla. Suorituskykytesteissä hajautetun relaatiotietokantajärjestelmän *Vertican* sekä toisen, nimeämättä jätetyn hajautetun relaatiotietokantajärjestelmän havaittiin olevan merkittävästi testattuja kyselyitä vastaavia Hadoop-ohjelmia tehokkaampia [@mapreduce-comparison]. Osasyyksi todetaan Hadoop-ohjelmien indeksoinnin puute – toisaalta, kuten kappaleessa 3.2 todetaan, indeksien käyttö MapReduce-sovelluksissa ei ole mahdotonta.
 
-2.	**Tiedon rakenne**: MapReduce-ohjelmointimalli ei ota kantaa syötteen tai tuloksen rakenteeseen. Relaatiotietokannat käyttävät tiedon ilmaisemiseen kaksiulotteisia tauluja, joiden rakenne määritellään ennen rivien lisäämistä tauluihin.
+On olemassa myös järjestelmiä, jotka mahdollistavat perinteisten relaatiotietokantajärjestelmien käytön hajautetusti – tällaisia järjestelmiä ovat esimerkiksi *pgpool-II* [@pgpool-site] sekä MapReduce-ohjelmointimallia toteutuksessaan hyödyntävä *HadoopDB* [@hadoopdb]. Molemmat toimivat ylimääräisenä kerroksena käyttäjän ja itsenäisten PostgreSQL-tietokantapalvelinten välissä. MapReduce-ohjelmointimallin joustavuuden vuoksi sen päälle voi rakentaa lisäksi järjestelmiä, joiden avulla MapReduce-laskentatehtäviä voidaan määrittää SQL:ää muistuttavan kyselykielen avulla. Esimerkki tällaisesta järjestelmästä on *Apache Hive* [@hive].
 
-Pavlo ja muut vertasivat artikkelissaan Hadoop-kirjaston suorituskykyä hajautettuihin relaatiotietokantajärjestelmiin 100 tietokoneen klusterilla. Suorituskykytesteissä *Vertican* havaittiin olevan keskimäärin noin 7 kertaa vastaavia Hadoop-ohjelmia tehokkaampi [@mapreduce-comparison]. Osasyyksi todetaan Hadoop-ohjelmien indeksoinnin puute – toisaalta, kuten kappaleessa 3.2 todetaan, myös MapReduce-sovellukset voivat hyödyntää indeksejä. Vertailu kertookin kenties enemmän Hadoop-kirjaston suorituskyvystä kuin MapReduce-ohjelmointimallista.
+## Spark
+
+Spark on Scala-ohjelmointikielellä toteutettu ohjelmointikehys hajautettua laskentaa varten [@spark]. Käyttäjän näkökulmasta hajautettu laskenta Spark-ohjelmistokehyksellä muistuttaa paljon MapReduce-ohjelmointimallin käyttämistä: käyttäjälle on tarjolla muun muassa *flatMap*- ja *reduceByKey*-nimiset funktiot, joilla tietoa voidaan käsitellä MapReduce-ohjelmointimallin *map*- ja *reduce*-funktioiden tapaan [@rdd].
+
+Spark-ohjelmointikehys käyttää *kestäviä, hajautettuja tietojoukkoja* (Resilient Distributed Dataset, RDD) [@spark], jotka ovat kokoelma laskennan kohteena olevia alkioita. RDD voidaan luoda esimerkiksi tekstitiedostosta, jolloin alkioita ovat tekstitiedoston rivit. RDD:lle on määritelty kahdenlaisia operaatiota [@rdd]:
+
+- 	*muunnokset* (transformation), jotka muuntavat RDD:n toiseksi RDD:ksi. Esimerkkejä muunnoksista ovat *filter*, joka suodattaa RDD:n alkioita jonkin ehdon perusteella sekä *sample*, joka antaa RDD:stä otoksen.
+
+- 	*toiminnot* (action), jotka päättävät RDD:n käsittelyn ja usein palauttavat käyttäjälle arvon. Esimerkiksi *count*-toiminto palauttaa käyttäjälle RDD:n alkioiden lukumäärän ja *save* tallentaa RDD:n alkiot esimerkiksi hajautettuun tiedostojärjestelmään.
+
+Luvussa 2.1 esitelty ohjelma *kissa*- ja *koira*-sanojen lukumäärien laskentaan voidaan toteuttaa Spark-ohjelmointimallilla seuraavasti:
+
+```scala
+sc.textFile("sanat.txt") // ladataan rivit tekstitiedostosta
+  .filter(sana -> sana == "kissa" or sana == "koira")
+  .map(sana -> (sana, 1)) // muodostetaan avain-arvo-pareja
+  .reduceByKey((arvo1, arvo2) -> arvo1 + arvo2) 
+  .collect()
+```
+
+Monet RDD-operaatioista ovat toteutettavissa helposti myös MapReduce-ohjelmointimallia käyttäen. Kuten luvussa 2.1 esitellystä ohjelmasta voi nähdä, on esimerkiksi alkioiden suodattaminen yksinkertaista tehdä osana *map*-funktiota. MapReduce-ohjelmointimalli kuitenkin rajoittuu yhteen *map*-laskentaoperaatioon ja yhteen *reduce*-laskentaoperaatioon yhtä MapReduce-laskentaoperaatiota kohti, kun taas RDD-operaatioita voidaan ketjuttaa vapaasti.
+
+Eräs RDD:n tärkeä ominaisuus on sen *laiskuus*: RDD:tä ei välttämättä määrittele siihen kuuluvat alkiot, vaan muunnokset joista se on muodostunut [@rdd]. Näin varsinainen laskenta voidaan suorittaa vasta kun se on välttämätöntä – esimerkiksi silloin, kun RDD:lle tehdään jokin toiminto. Tämä myös mahdollistaa alkioiden muodostamisen uudestaan, jos ne jostain syystä häviävät, esimerkiksi Spark-klusteriin kuuluvan tietokoneen rikkoutumisen vuoksi tai mikäli alkioita täytyy vapauttaa muistista vapaan muistin loppumisen vuoksi. Käyttäjä voi kuitenkin pakottaa Spark-ohjelmointikehyksen laskemaan RDD:n alkiot etukäteen, jolloin laskettuja alkiota voi käyttää useaan kertaan. MapReduce-ohjelmointimallissa vastaava onnistuu tallentamalla yhden MapReduce-laskentatehtävän tulos ja käyttämällä sitä syötteenä useassa MapReduce-laskentatehtävässä.
 
 # Yhteenveto
 
