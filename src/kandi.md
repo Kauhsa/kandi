@@ -2,11 +2,13 @@
 
 Suurten tietomäärien kerääminen ja analysointi on usein hyödyllistä liiketoiminnan ymmärtämisen ja tehostamisen kannalta. Esimerkiksi verkkokaupankäyntiin erikoistunut eBay kertoi vuonna 2013 säilyttävänsä tietovarastoissaan lähes 90 petatavua kaupankäyntiin liittyvää dataa ^[Inside eBay’s 90PB data warehouse: <http://www.itnews.com.au/News/342615,inside-ebay8217s-90pb-data-warehouse.aspx>]. Tarvetta suurten tietomäärien käsittelyyn esiintyy kuitenkin muuallakin kuin yrityksissä – vuonna 2010 fysiikan tutkimukseen käytetyn *Large Hadron Colliderin* päätunnistimen tuottamasta datasta jäi karsimisen jälkeen analysoitavaksi noin 13 petatavua dataa [@lhc]. Tällaiset useiden kymmenien petatavujen suuruiset tietovarastot ovat suuruudeltaan monikymmentuhatkertaisia verrattuna tyypillisen kuluttajatietokoneen massamuistin kapasiteettiin ^[Pelijulkaisualusta *Steam* julkaisee kuukausittain tilastoja käyttäjiensä tietokoneista, mukaan lukien massamuistin koon – tätä kirjoittaessa yleisimmäksi massamuistin kooksi raportoidaan 250-499 gigatavua: <http://store.steampowered.com/hwsurvey/>]. Näin suuria tietomääriä onkin vaikea käsitellä käyttäen laskentaan vain yhtä tietokonetta.
 
-*Hajautettu laskenta* tarkoittaa kahden tai useamman tietokoneen hyödyntämistä jossain laskentaoperaatiossa. Tämä mahdollistaa vaativien laskentatehtävien suorittamisen nopeammin kuin vain yhdellä tietokoneella olisi mahdollista. Hajautettua laskentaa voi tehdä käyttämällä esimerkiksi joukkoa tietoliikenneyhteyksillä toisiinsa yhdistettyjä itsenäisiä, usein yleisesti saatavilla olevista komponenteista rakennettuja tietokoneita. Tällaista joukkoa tietokoneita kutsutaan *klusteriksi* [@cluster-computing]. Yleisesti saatavilla olevista komponenteista rakennettujen klustereiden käyttö vaativiin laskentaoperaatioihin on havaittu erityisvalmisteisia supertietokoneita edullisemmaksi [@cluster-computing]. Suurten datan käsittelyyn erikoistuneiden yritysten, kuten Googlen, klustereihin voi kuulua satoja tai tuhansia tietokoneita [@mapreduce].
+Tässä tutkielmassa *hajautetulla laskennalla* tarkoitetaan kahden tai useamman tietokoneen hyödyntämistä jossain laskentaoperaatiossa. Hajautettua laskentaa voi tehdä käyttämällä esimerkiksi joukkoa tietoliikenneyhteyksillä toisiinsa yhdistettyjä itsenäisiä, usein yleisesti saatavilla olevista komponenteista rakennettuja tietokoneita. Tällaista joukkoa tietokoneita kutsutaan *klusteriksi* [@cluster-computing]. Yleisesti saatavilla olevista komponenteista rakennettujen klustereiden käyttö vaativiin laskentaoperaatioihin on havaittu erityisvalmisteisia supertietokoneita edullisemmaksi [@cluster-computing]. Suurten datan käsittelyyn erikoistuneiden yritysten, kuten Googlen, klustereihin voi kuulua satoja tai tuhansia tietokoneita [@mapreduce].
 
 Hyödyntääkseen hajautettua laskentaa ei ole kuitenkaan välttämätöntä tehdä suuria investointeja. Oman tietokoneklusterin hankkimisen sijaan yritykset voivat käyttää hyväkseen infrastruktuuria tai laskentaa palveluna tarjoavia yrityksiä, jolloin kustannuksia syntyy vain palvelun käytöstä [@cloudcomputing].
 
-Tutkielma esittelee MapReduce-ohjelmointimallin, joka on menetelmä käsitellä suuria tietomääriä hajautetusti. Tutkielmassa käydään läpi ohjelmointimallin toiminta sekä erilaisia, MapReduce-laskentatehtävien suorituskyvyn parantamiseen tähtääviä optimointeja. Lisäksi tutkielmassa verrataan MapReduce-ohjelmointimallia lyhyesti muihin hajautetun laskennan ratkaisuihin.
+Koska hajautettuun laskentaan liittyy useampi kuin yksi tietokone, liittyy hajautettuun laskentaan osallistuvien tietokoneiden välistä kommunikaatiota jossain muodossa. Tämä tekee hajautetusta laskennasta yhdellä tietokoneella tapahtuvaa laskentaa monimutkaisempaa. Monen tietokoneen hyödyntäminen kasvattaa myös mahdollisten vikatilanteiden määrää. Huonoista puolista huolimatta hajautettu laskenta on kuitenkin välttämätöntä, sillä yhdellä tietokoneella ei voida käsitellä yhtä suuria tietomääriä kuin usealla tietokoneella.
+
+Tutkielma esittelee MapReduce-ohjelmointimallin, joka on menetelmä käsitellä suuria tietomääriä hajautetusti. Luvussa 2 käydään läpi ohjelmointimalli sekä sen. Luvussa 3 käydään läpi kaksi erilaista MapReduce-suorituskyvyn parantamiseen tähtäävää optimointia, nimeltään indeksointi ja *combiner*-vaihe. Luku 4 näyttää, miten MapReduce-ohjelmointimallia voidaan hyödyntää PageRank-menetelmän toteuttamisessa. Luvussa 5 esitellään muita hajautetun laskennan ratkaisuja ja verrataan niitä MapReduce-ohjelmointimalliin.
 
 # MapReduce-ohjelmointimalli
 
@@ -180,7 +182,7 @@ def reduce(sivu_id, arvot):
 
 # Muut hajautetun laskennan ratkaisut
 
-MapReduce-ohjelmointimalli ei ole ainoa tai ensimmäinen ratkaisu suurien tietomäärien käsittelyyn, ja toisaalta MapReduce-ohjelmointimalli on inspiroinut muita innoittajana. Tässä luvussa tutustutaan kahteen muuhun hajautetun laskennan ratkaisuun ja verrataan näitä ratkaisuja MapReduce-ohjelmointimalliin.
+MapReduce-ohjelmointimalli ei ole ainoa tai ensimmäinen ratkaisu suurien tietomäärien käsittelyyn, ja toisaalta MapReduce-ohjelmointimalli toiminut uusien hajautetun laskennan ratkaisujen inspiraationa. Tässä luvussa tutustutaan kahteen muuhun hajautetun laskennan ratkaisuun ja verrataan näitä ratkaisuja MapReduce-ohjelmointimalliin.
 
 ## Hajautetut relaatiotietokantajärjestelmät
 
@@ -209,14 +211,14 @@ Spark-ohjelmointikehys käyttää *kestäviä, hajautettuja tietojoukkoja* (Resi
 Luvussa 2.1 esitelty ohjelma *kissa*- ja *koira*-sanojen lukumäärien laskentaan voidaan toteuttaa Spark-ohjelmointimallilla seuraavasti:
 
 ```scala
-sc.textFile("sanat.txt") // ladataan rivit tekstitiedostosta
-  .filter(sana -> sana == "kissa" or sana == "koira")
-  .map(sana -> (sana, 1)) // muodostetaan avain-arvo-pareja
-  .reduceByKey((arvo1, arvo2) -> arvo1 + arvo2) 
-  .collect()
+// olkoon muuttuja rdd joukko joitain sanoja 
+rdd.filter(sana -> sana == "kissa" or sana == "koira")
+  	.map(sana -> (sana, 1)) // muodostetaan avain-arvo-pareja
+   	.reduceByKey((arvo1, arvo2) -> arvo1 + arvo2) 
+   	.collect()
 ```
 
-Monet RDD-operaatioista ovat toteutettavissa helposti myös MapReduce-ohjelmointimallia käyttäen. Kuten luvussa 2.1 esitellystä ohjelmasta voi nähdä, on esimerkiksi alkioiden suodattaminen yksinkertaista tehdä osana *map*-funktiota. MapReduce-ohjelmointimalli kuitenkin rajoittuu yhteen *map*-laskentaoperaatioon ja yhteen *reduce*-laskentaoperaatioon yhtä MapReduce-laskentaoperaatiota kohti, kun taas RDD-operaatioita voidaan ketjuttaa vapaasti.
+Monet RDD-operaatioista ovat toteutettavissa helposti myös MapReduce-ohjelmointimallia käyttäen. Kuten luvussa 2.1 esitellystä ohjelmasta voi nähdä, on esimerkiksi alkioiden suodattaminen yksinkertaista tehdä osana *map*-funktion toteutusta. MapReduce-ohjelmointimalli kuitenkin rajoittuu yhteen *map*-laskentaoperaatioon ja yhteen *reduce*-laskentaoperaatioon yhtä MapReduce-laskentaoperaatiota kohti, kun taas RDD-operaatioita voidaan ketjuttaa vapaasti.
 
 Eräs RDD:n tärkeä ominaisuus on sen *laiskuus*: RDD:tä ei välttämättä määrittele siihen kuuluvat alkiot, vaan muunnokset joista se on muodostunut [@rdd]. Näin varsinainen laskenta voidaan suorittaa vasta kun se on välttämätöntä – esimerkiksi silloin, kun RDD:lle tehdään jokin toiminto. Tämä myös mahdollistaa alkioiden muodostamisen uudestaan, jos ne jostain syystä häviävät, esimerkiksi Spark-klusteriin kuuluvan tietokoneen rikkoutumisen vuoksi tai mikäli alkioita täytyy vapauttaa muistista vapaan muistin loppumisen vuoksi. Käyttäjä voi kuitenkin pakottaa Spark-ohjelmointikehyksen laskemaan RDD:n alkiot etukäteen, jolloin laskettuja alkiota voi käyttää useaan kertaan. MapReduce-ohjelmointimallissa vastaava onnistuu tallentamalla yhden MapReduce-laskentatehtävän tulos ja käyttämällä sitä syötteenä useassa MapReduce-laskentatehtävässä.
 
