@@ -200,27 +200,26 @@ On olemassa myös järjestelmiä, jotka mahdollistavat perinteisten relaatiotiet
 
 ## Spark
 
-Spark on Scala-ohjelmointikielellä toteutettu ohjelmointikehys hajautettua laskentaa varten [@spark]. Käyttäjän näkökulmasta hajautettu laskenta Spark-ohjelmistokehyksellä muistuttaa paljon MapReduce-ohjelmointimallin käyttämistä: käyttäjälle on tarjolla muun muassa *flatMap*- ja *reduceByKey*-nimiset funktiot, joilla tietoa voidaan käsitellä MapReduce-ohjelmointimallin *map*- ja *reduce*-funktioiden tapaan [@rdd].
+Spark on Scala-ohjelmointikielellä toteutettu ohjelmointikehys hajautettua laskentaa varten [@spark]. Ohjelmistokehyksen esitetään MapReduce-ohjelmointimalliin verrattuna helpottavan käyttötarkoituksia, joissa samaa joukkoa tietoa käytetään useaan kertaan. Tällaisia ovat muun muassa iteratiiviset algoritmit, kuten luvussa 4 esitelty algoritmi PageRank-menetelmän toteuttamiseen.
 
-Spark-ohjelmointikehys käyttää *kestäviä, hajautettuja tietojoukkoja* (Resilient Distributed Dataset, RDD) [@spark], jotka ovat kokoelma laskennan kohteena olevia alkioita. RDD voidaan luoda esimerkiksi tekstitiedostosta, jolloin alkioita ovat tekstitiedoston rivit. RDD:lle on määritelty kahdenlaisia operaatiota [@rdd]:
+Spark-ohjelmointikehyksen käyttämä abstraktio on *kestävät, hajautetut tietojoukot* (Resilient Distributed Dataset, RDD), jotka ovat kokoelma laskennassa käytettäviä alkioita [@rdd]. Kestäviä, hajautettuja tietojoukkoja voidaan niiden luomisen jälkeen ainoastaan lukea, joten kaikki muutokset tietojoukkoihin luovat uuden tietojoukon. Käyttäjän näkökulmasta hajautettu laskenta Spark-ohjelmistokehyksellä muistuttaa paljon MapReduce-ohjelmointimallin käyttämistä: käyttäjä voi käsitellä kestäviä, hajautettuja tietojoukkoja erilaisin funktioin. Funktioihin kuuluvat muun muassa *flatMap*- ja *reduceByKey*, joilla tietoa voidaan käsitellä MapReduce-ohjelmointimallin *map*- ja *reduce*-funktioiden tapaan.
 
-- 	*muunnokset* (transformation), jotka muuntavat RDD:n toiseksi RDD:ksi. Esimerkkejä muunnoksista ovat *filter*, joka suodattaa RDD:n alkioita jonkin ehdon perusteella sekä *sample*, joka antaa RDD:stä otoksen.
-
-- 	*toiminnot* (action), jotka päättävät RDD:n käsittelyn ja usein palauttavat käyttäjälle arvon. Esimerkiksi *count*-toiminto palauttaa käyttäjälle RDD:n alkioiden lukumäärän ja *save* tallentaa RDD:n alkiot esimerkiksi hajautettuun tiedostojärjestelmään.
-
-Luvussa 2.1 esitelty ohjelma *kissa*- ja *koira*-sanojen lukumäärien laskentaan voidaan toteuttaa Spark-ohjelmointimallilla seuraavasti:
+Seuraava esimerkki havainnollistaa, miten saman tietojoukon käyttäminen useaan kertaan onnistuu Spark-ohjelmistokehystä käytettäessä:
 
 ```scala
-// olkoon muuttuja rdd joukko joitain sanoja 
-rdd.filter(sana -> sana == "kissa" or sana == "koira")
-  	.map(sana -> (sana, 1)) // muodostetaan avain-arvo-pareja
-   	.reduceByKey((arvo1, arvo2) -> arvo1 + arvo2) 
-   	.collect()
+// olkoon muuttuja "rdd" jokin kokonaislukuja sisältävä RDD
+var parilliset = rdd.filter(x -> x % 2 == 0).cache()
+var maara = parilliset.count()
+var summa = parilliset.reduce((a, b) -> (a + b))
 ```
 
-Monet RDD-operaatioista ovat toteutettavissa helposti myös MapReduce-ohjelmointimallia käyttäen. Kuten luvussa 2.1 esitellystä ohjelmasta voi nähdä, on esimerkiksi alkioiden suodattaminen yksinkertaista tehdä osana *map*-funktion toteutusta. MapReduce-ohjelmointimalli kuitenkin rajoittuu yhteen *map*-laskentaoperaatioon ja yhteen *reduce*-laskentaoperaatioon yhtä MapReduce-laskentaoperaatiota kohti, kun taas RDD-operaatioita voidaan ketjuttaa vapaasti.
+Esimerkissä suodatetaan tietojoukko *filter*-funktion avulla niin, että suodatuksen tuloksena saadussa uudessa tietojoukossa on vain parilliset alkiot. *Cache*-funktion käyttö kertoo Spark-ohjelmistokehykselle, että tietojoukko kannattaa pyrkiä säilyttämään muistissa sen ensimmäisen laskentakerran jälkeen.
 
-Eräs RDD:n tärkeä ominaisuus on sen *laiskuus*: RDD:tä ei välttämättä määrittele siihen kuuluvat alkiot, vaan muunnokset joista se on muodostunut [@rdd]. Näin varsinainen laskenta voidaan suorittaa vasta kun se on välttämätöntä – esimerkiksi silloin, kun RDD:lle tehdään jokin toiminto. Tämä myös mahdollistaa alkioiden muodostamisen uudestaan, jos ne jostain syystä häviävät, esimerkiksi Spark-klusteriin kuuluvan tietokoneen rikkoutumisen vuoksi tai mikäli alkioita täytyy vapauttaa muistista vapaan muistin loppumisen vuoksi. Käyttäjä voi kuitenkin pakottaa Spark-ohjelmointikehyksen laskemaan RDD:n alkiot etukäteen, jolloin laskettuja alkiota voi käyttää useaan kertaan. MapReduce-ohjelmointimallissa vastaava onnistuu tallentamalla yhden MapReduce-laskentatehtävän tulos ja käyttämällä sitä syötteenä useassa MapReduce-laskentatehtävässä.
+Tällainen laskettujen tulosten uudelleenkäyttö on kuitenkin mahdollista myös MapReduce-ohjelmointimallin avulla – yhden MapReduce-laskentatehtävän tulos voidaan tallentaa ja käyttää sitä muissa MapReduce-laskentatehtävissä. Spark-ohjelmistokehyksen esitetään kuitenkin toimivan MapReduce-ohjelmointimallia tehokkaammin, sillä MapReduce-laskentatehtävien täytyy tallentaa ja ladata tulokset levyltä [@spark]. Koska MapReduce-ohjelmointimallissa tulosten tallennuskohteena toimivaa tekniikkaa ei ole rajoitettu, voidaan tulokset tallentaa ja ladata esimerkiksi muistissa toimivasta hajautetusta tiedostojärjestelmästä.
+
+Kestävien, hajautettujen tietojoukkojen lisäksi Spark-ohjelmistokehyksessä on ominaisuuksia, joilla voidaan hallita laskentaan osallistuvien tietokoneiden välistä yhteistä tilaa [@spark]. *Yleislähetys*-muuttujien (broadcast) avulla voidaan lähettää tietoa kaikille tietokoneille tehokkaasti. Tätä ominaisuutta voisi käyttää esimerkiksi luvussa 4 esitellyn PageRank-algoritmin sivujen välisten yhteyksien lähettämiseen kaikille tietokoneille. *Kerääjät* (accumulator) ovat muuttujia, jonka arvoa laskentaan osallistuvat tietokoneet voivat muuttaa vain yhdellä operaatiolla, kasvattamalla. Kerääjiä voidaan käyttää esimerkiksi erilaisten laskurien toteutukseen.
+
+Lei Gu ja Huan Li vertasivat Hadoop- ja Spark-ohjelmistokehyksien suorituskykyä iteratiivisissa laskentatehtävissä [@spark-hadoop-comparison]. Spark-ohjelmien todettiin olevan keskimäärin Hadoop-ohjelmia nopeampia, mutta käyttävät enemmän keskusmuistia sekä hidastuvat, jos keskusmuistia ei ole käytössä riittävästi.
 
 # Yhteenveto
 
