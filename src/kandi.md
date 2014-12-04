@@ -2,9 +2,9 @@
 
 Suurten tietomäärien kerääminen ja analysointi on usein hyödyllistä liiketoiminnan ymmärtämisen ja tehostamisen kannalta. Esimerkiksi verkkokaupankäyntiin erikoistunut eBay kertoi vuonna 2013 säilyttävänsä tietovarastoissaan lähes 90 petatavua kaupankäyntiin liittyvää dataa ^[Inside eBay’s 90PB data warehouse: <http://www.itnews.com.au/News/342615,inside-ebay8217s-90pb-data-warehouse.aspx>]. Tarvetta suurten tietomäärien käsittelyyn esiintyy kuitenkin muuallakin kuin yrityksissä – vuonna 2010 fysiikan tutkimukseen käytetyn *Large Hadron Colliderin* päätunnistimen tuottamasta datasta jäi karsimisen jälkeen analysoitavaksi noin 13 petatavua dataa [@lhc]. Tällaiset useiden kymmenien petatavujen suuruiset tietovarastot ovat suuruudeltaan monikymmentuhatkertaisia verrattuna tyypillisen kuluttajatietokoneen massamuistin kapasiteettiin ^[Pelijulkaisualusta *Steam* julkaisee kuukausittain tilastoja käyttäjiensä tietokoneista, mukaan lukien massamuistin koon – tätä kirjoittaessa yleisimmäksi massamuistin kooksi raportoidaan 250-499 gigatavua: <http://store.steampowered.com/hwsurvey/>]. Näin suuria tietomääriä onkin vaikea käsitellä käyttäen laskentaan vain yhtä tietokonetta.
 
-Tässä tutkielmassa *hajautetulla laskennalla* tarkoitetaan kahden tai useamman tietokoneen hyödyntämistä jossain laskentaoperaatiossa. Hajautettua laskentaa voi tehdä käyttämällä esimerkiksi joukkoa tietoliikenneyhteyksillä toisiinsa yhdistettyjä itsenäisiä, usein yleisesti saatavilla olevista komponenteista rakennettuja tietokoneita. Tällaista joukkoa tietokoneita kutsutaan *klusteriksi* [@cluster-computing]. Yleisesti saatavilla olevista komponenteista rakennettujen klustereiden käyttö vaativiin laskentaoperaatioihin on havaittu erityisvalmisteisia supertietokoneita edullisemmaksi [@cluster-computing]. Suurten datan käsittelyyn erikoistuneiden yritysten, kuten Googlen, klustereihin voi kuulua satoja tai tuhansia tietokoneita [@mapreduce].
+Tässä tutkielmassa *hajautetulla laskennalla* tarkoitetaan kahden tai useamman tietokoneen hyödyntämistä jossain laskentaoperaatiossa. Hajautettua laskentaa voi tehdä käyttämällä esimerkiksi joukkoa tietoliikenneyhteyksillä toisiinsa yhdistettyjä itsenäisiä, usein yleisesti saatavilla olevista komponenteista rakennettuja tietokoneita. Tällaista joukkoa tietokoneita kutsutaan *klusteriksi* [@cluster-computing]. Yleisesti saatavilla olevista komponenteista rakennettujen klustereiden käyttö vaativiin laskentaoperaatioihin on havaittu erityisvalmisteisia supertietokoneita edullisemmaksi [@cluster-computing].
 
-Hyödyntääkseen hajautettua laskentaa ei ole kuitenkaan välttämätöntä tehdä suuria investointeja. Oman tietokoneklusterin hankkimisen sijaan yritykset voivat käyttää hyväkseen infrastruktuuria tai laskentaa palveluna tarjoavia yrityksiä, jolloin kustannuksia syntyy vain palvelun käytöstä [@cloudcomputing].
+Suurten datan käsittelyyn erikoistuneiden yritysten, kuten Googlen, klustereihin voi kuulua satoja tai tuhansia tietokoneita [@mapreduce]. Hyödyntääkseen hajautettua laskentaa ei ole kuitenkaan välttämätöntä tehdä suuria investointeja. Oman tietokoneklusterin hankkimisen sijaan yritykset voivat käyttää hyväkseen infrastruktuuria tai laskentaa palveluna tarjoavia yrityksiä, jolloin kustannuksia syntyy vain palvelun käytöstä [@cloudcomputing].
 
 Koska hajautettuun laskentaan liittyy useampi kuin yksi tietokone, liittyy hajautettuun laskentaan osallistuvien tietokoneiden välistä kommunikaatiota jossain muodossa. Tämä tekee hajautetusta laskennasta yhdellä tietokoneella tapahtuvaa laskentaa monimutkaisempaa, ja monen tietokoneen hyödyntäminen kasvattaa myös mahdollisten vikatilanteiden määrää. Huonoista puolista huolimatta hajautettu laskenta on kuitenkin välttämätöntä, sillä yhdellä tietokoneella ei voida käsitellä riittävän suuria tietomääriä.
 
@@ -12,9 +12,7 @@ Tutkielma esittelee MapReduce-ohjelmointimallin, joka on menetelmä käsitellä 
 
 # MapReduce-ohjelmointimalli
 
-MapReduce on Googlen vuonna 2003 kehittämä ohjelmointimalli [@mapreduce2 s. 72], jota käytetään suurten tietomäärien käsittelyyn ja tuottamiseen [@mapreduce s. 107]. Ohjelmointimallin tarkoituksena on vähentää hajautetun laskennan monimutkaisuutta tarjoamalla useaan hajautetun laskennan sovellukseen sopivan abstraktion [@mapreduce, s. 72]. Käyttämällä sovelluksessaan MapReduce-kirjastoa ohjelmoijan ei tarvitse huolehtia monista hajautettuun laskentaan liittyvistä yksityiskohdista, kuten tietokoneiden välisestä kommunikaatiosta [@mapreduce, s. 72].
-
-MapReduce on kuitenkin ainoastaan ohjelmointimalli, ja sen hyödyntämiseksi tarvitaan jokin ohjelmointimallin toteuttava kirjasto. Eräs tunnettu MapReduce-ohjelmointimallin toteutus on osa avoimen lähdekoodin Apache Hadoop -projektia, jonka käyttäjiin kuuluvat muun muassa Facebook ja Yahoo! [@hive].
+MapReduce on Googlen vuonna 2003 kehittämä ohjelmointimalli [@mapreduce2 s. 72], jota käytetään suurten tietomäärien käsittelyyn ja tuottamiseen [@mapreduce s. 107]. Ohjelmointimallin tarkoituksena on vähentää hajautetun laskennan monimutkaisuutta tarjoamalla useaan hajautetun laskennan sovellukseen sopiva abstraktio [@mapreduce, s. 72]. Käyttämällä sovelluksessaan MapReduce-kirjastoa ohjelmoijan ei tarvitse huolehtia monista hajautettuun laskentaan liittyvistä yksityiskohdista, kuten tietokoneiden välisestä kommunikaatiosta [@mapreduce, s. 72]. Eräs tunnettu MapReduce-ohjelmointimallin toteutus on osa avoimen lähdekoodin Apache Hadoop -projektia, jonka käyttäjiin kuuluvat muun muassa Facebook ja Yahoo! [@hive].
 
 ## *Map*- ja *reduce*-funktiot
 
@@ -67,33 +65,33 @@ $$
 
 Kuvassa 1 havainnollistetaan määriteltyjä *map*- ja *reduce*-funktioita. *Map*- ja *reduce*-funktioihin nuolella viittaavat laatikot kuvaavat funktioiden syötettä, ja funktiosta poispäin viittatut laatikot funktion tulosta.
 
-![Mahdollinen MapReduce-laskentatehtävän syöte, välitulokset ja lopullinen tulos.](dist/map-and-reduce)
+![Mahdollinen MapReduce-laskentatehtävän syöte, välitulokset ja lopullinen tulos](dist/map-and-reduce)
 
 ## MapReduce-ohjelman suorituksen kulku
 
 Googlen esittelemässä MapReduce-ohjelmointimallin toteutuksessa ohjelman suoritus alkaa käynnistämällä käyttäjän ohjelmasta kopio kaikilla laskentaan osallistuvilla tietokoneilla. Yksi näistä kopioista on *isäntäprosessi* (master), joka koordinoi laskennan kulkua. Muut ohjelman kopiot ovat varsinaisen laskennan suorittavia *työprosesseja* (worker).
 
-Jos syöte ei ole valmiiksi jaettu, se jaetaan pieniin osiin. Näitä osia kutsutaan *jaoksi* (split), ja jokaiseen jakoon saattaa kuulua yksi tai useampi *map*-funktiolle annettava syötteen alkio. Jokaisesta jaosta muodostetaan *map*-laskentatehtävä, jonka isäntäprosessi luovuttaa jollekin työprosessille laskettavaksi. Syötteen jakaminen mahdollistaa sen käsittelyn useassa työprosessissa samanaikaisesti.
+Jos syöte ei ole valmiiksi jaettu, se jaetaan pieniin osiin. Näitä osia kutsutaan *jaoiksi* (split), ja jokaiseen jakoon saattaa kuulua yksi tai useampi *map*-funktiolle annettava syötteen alkio. Jokaisesta jaosta muodostetaan *map*-laskentatehtävä, jonka isäntäprosessi luovuttaa jollekin työprosessille laskettavaksi. Syötteen jakaminen mahdollistaa sen käsittelyn useassa työprosessissa samanaikaisesti.
 
 *Map*-laskentatehtävien tuloksena saatavista välituloksista muodostetaan *osia* (partition). Jokainen yksittäinen välitulos tallennetaan johonkin osaan, joka valitaan soveltamalla *hajautusfunktiota* välituloksen avaimeen. Näin saadaan aikaan osia, joissa eri avaimet ovat jakautuneet tasaisesti eri osien kesken ja joissa kaikki saman avaimen välitulokset päätyvät samaan osaan.
 
-Jokaisesta osasta muodostetaan *reduce*-laskentatehtävä. *Map*-laskentatehtävien tavoin *reduce*-laskentatehtävät sijoitetaan työprosessien laskettaviksi isäntäprosessin toimesta. Ennen *reduce*-funktion soveltamista välituloksiin työprosessi järjestää yhden osan välitulokset avaimen mukaan. Näin välitulokset joilla on sama avain ovat osan sisällä peräkkäin, ja avaimia voidaan käsitellä *reduce*-funktiolla yksi kerrallaan. Kun *reduce*-operaatio on yhden avaimen osalta valmis, laskenta on tämän avaimen välitulosten osalta tehty.
+Jokaisesta osasta muodostetaan *reduce*-laskentatehtävä. Isäntäprosessi sijoittaa *reduce*-laskentatehtävät työprosessien laskettaviksi *map*-laskentatehtävien tavoin. Ennen *reduce*-funktion soveltamista välituloksiin työprosessi järjestää yhden osan välitulokset avaimen mukaan. Näin välitulokset joilla on sama avain ovat osan sisällä peräkkäin, ja avaimia voidaan käsitellä *reduce*-funktiolla yksi kerrallaan. Kun *reduce*-operaatio on yhden avaimen osalta valmis, laskenta on tämän avaimen välitulosten osalta tehty.
 
 MapReduce-ohjelmointimalli ei rajoita syötteen lataamiseen tai tuloksen tallentamiseen käytettyjä tapoja. Syötteenä voidaan esimerkiksi käyttää joukkoa tiedostojärjestelmässä olevia tiedostoja, mutta ohjelmointimallin toteutus voi lisäksi mahdollistaa esimerkiksi tietokannan käytön syötteenä tai tuloksen tallennuskohteena [@mapreduce2, s. 74]. Usein MapReduce-laskentatehtäviä halutaan ketjuttaa käyttäen saatua tulosta uuden MapReduce-laskentatehtävän syötteenä [@mapreduce s. 109].
 
-![MapReduce-laskentatehtävän suorituksen kulku.](dist/mapreduce-operation)
+![MapReduce-laskentatehtävän suorituksen kulku](dist/mapreduce-operation)
 
 Kuva 2 havainnollistaa yllä esiteltyä MapReduce-laskentatehtävän suorituksen kulkua. Kuvassa näytetään, minkä laskentatehtävän alle laskennan eri osat kuuluvat. Toisin kuin kuvan syötteellä, on yhteen osaan mahdollista kuulua useamman kuin yhden avaimen omaavia välituloksia.
 
 # MapReducen optimointeja
 
-MapReduce-ohjelmointimallia sellaisenaan voidaan pitää melko yksinkertaisena. Ohjelmointimallin suorituskykyä voidaan kuitenkin parantaa laajentamalla sen toimintaa jollain tavalla. Tässä luvussa tutustutaan kahteen MapReduce-ohjelmointimallin suorituskyvyn parantamiseen eri tavalla tähtäävään optimointiin, *combiner*-vaiheeseen sekä indeksointiin.
+MapReduce-ohjelmointimallia sellaisenaan voidaan pitää melko yksinkertaisena. Ohjelmointimallin suorituskykyä voidaan kuitenkin parantaa laajentamalla sen toimintaa. Tässä luvussa tutustutaan kahteen MapReduce-ohjelmointimallin suorituskyvyn parantamiseen tähtäävään optimointiin, *combiner*-vaiheeseen sekä indeksointiin.
 
 ## Combiner
 
-![MapReduce-laskentatehtävä *combiner*-funktiolla varustettuna.](dist/combiner)
+![MapReduce-laskentatehtävä *combiner*-funktiolla varustettuna](dist/combiner)
 
-Dean ja muut esittelevät MapReduce-ohjelmointimallin lisäksi [@mapreduce] optimoinnin, joka lisää MapReduce-operaatioon uuden vaiheen nimeltään *combiner*. *Combiner*-vaiheen käyttö nopeuttaa *MapReduce*-operaation suoritusta erityisesti tilanteissa, joissa saman avaimen omaavia välituloksia on paljon.
+Dean ja muut [@mapreduce] esittelevät MapReduce-ohjelmointimallin lisäksi optimoinnin, joka lisää MapReduce-operaatioon uuden vaiheen nimeltään *combiner*. *Combiner*-vaiheen käyttö nopeuttaa *MapReduce*-operaation suoritusta erityisesti tilanteissa, joissa saman avaimen omaavia välituloksia on paljon.
 
 Optimoinnin ideana on vähentää *map*- ja *reduce*-laskentatehtävien välistä kommunikaatiota tekemällä välitulosten osittaista yhdistämistä jo *map*-laskentatehtävän sisällä. Tämä toteutetaan soveltamalla *combiner*-funktiota *map*-laskentatehtävän välitulosten yhdistämiseen *reduce*-funktion tapaan. Seurauksena on, että verkon yli *reduce*-laskentatehtäville lähetettävien välitulosten määrä vähenee. *Combiner*-funktion käyttämistä havainnollistetaan kuvassa 3. Kuvaan 2 verrattuna *map*- ja *reduce*-laskentatehtävien välistä kommunikaatiota on vähemmän.
 
@@ -132,7 +130,7 @@ $$
 
 Kuvassa 4 näytetään esimerkki PageRank-menetelmästä käytännössä. Kuvassa on otos PageRank-arvon laskemiseen käytetyistä sivuista, niiden PageRank-arvoista, sekä viittausten vaikutuksista sivujen PageRank-arvoon.
 
-![Esimerkki PageRank-menetelmästä.](dist/pagerank)
+![Esimerkki PageRank-menetelmästä](dist/pagerank)
 
 PageRank lasketaan usein käyttäen *iteratiivista menetelmää* [@pagerank-mapreduce]. Esimerkkinä iteratiivisesta menetelmästä on seuraava algoritmi, joka laskee PageRank-arvon yksinkertaistetun version jollekin joukolle sivuja siten. Algoritmissa sivujen PageRank-arvot ovat aluksi karkeita, mutta tarkentuvat jokaisen iteraation jälkeen.
 
@@ -198,11 +196,13 @@ Relaatiotietokantajärjestelmien ja SQL-kyselykielen suosion vuoksi saattaa olla
 
 Tiedon käsittely MapReduce-ohjelmointimallilla ja relaatiotietokantajärjestelmillä eroaa monin tavoin, muun muassa seuraavasti:
 
-- 	**Ohjelmointimalli**: MapReduce-ohjelmointimallin käyttäjä toteuttaa tiedon käsittelyn *map*- ja *reduce*-funktioiden avulla. Koska *map*- ja *reduce*-funktiot toteutetaan tavallisesti yleiskäyttöisellä ohjelmointikielellä, niiden sisältämälle logiikalle tai sisäiselle rakenteelle ei ole asetettu rajoituksia. Relaatiotietokannassa tiedon käsittely tehdään SQL-kyselykielellä – tosin suurin osa tunnetuista relaatiotietokantajärjestelmistä tukee myös jonkinlaista proseduraalista ohjelmointikieltä.
+- 	**Ohjelmointimalli**: MapReduce-ohjelmointimallin käyttäjä toteuttaa tiedon käsittelyn *map*- ja *reduce*-funktioiden avulla. *Map*- ja *reduce*-funktiot toteutetaan tavallisesti yleiskäyttöisellä ohjelmointikielellä. Tästä seuraa, että funktioiden sisältämälle logiikalle tai sisäiselle rakenteelle ei ole asetettu rajoituksia. Relaatiotietokannassa tiedon käsittely tehdään SQL-kyselykielellä, jolla – toisin kuin *map*- tai *reduce*-funktioilla – kuvataan kyselyn haluttua tulosta eikä tuloksen laskennan yksityiskohtia [@mapreduce-comparison]. Suurin osa tunnetuista relaatiotietokantajärjestelmistä tukee kuitenkin myös jonkinlaista ohjelmointikieltä kyselyiden rakentamisessa.
 
--	**Tiedon rakenne**: MapReduce-ohjelmointimalli ei ota kantaa syötteen tai tuloksen rakenteeseen. Relaatiotietokannat käyttävät tiedon ilmaisemiseen kaksiulotteisia tauluja, joiden rakenne määritellään ennen kuin tietokantaan voidaan lisätä sisältöä.
+-	**Tiedon rakenne**: MapReduce-ohjelmointimalli ei ota kantaa syötteen tai tuloksen rakenteeseen [@mapreduce2]. Relaatiotietokannat käyttävät tiedon ilmaisemiseen kaksiulotteisia tauluja, joiden rakenne määritellään ennen kuin tietokantaan voidaan lisätä sisältöä [@mapreduce-comparison].
 
-Pavlo ja muut vertasivat artikkelissaan Hadoop-kirjaston suorituskykyä hajautettuihin relaatiotietokantajärjestelmiin 100 tietokoneen klusterilla. Suorituskykytesteissä hajautetun relaatiotietokantajärjestelmän *Vertican* sekä toisen, nimeämättä jätetyn hajautetun relaatiotietokantajärjestelmän havaittiin olevan merkittävästi testattuja kyselyitä vastaavia Hadoop-ohjelmia tehokkaampia [@mapreduce-comparison]. Osasyyksi todetaan Hadoop-ohjelmien indeksoinnin puute – toisaalta, kuten kappaleessa 3.2 todetaan, indeksien käyttö MapReduce-sovelluksissa ei ole mahdotonta.
+-   **Suoritus**: MapReduce-ohjelmointimalli sellaisenaan rajoittuu malliin, jossa tieto käy ensin *map*- ja sen jälkeen *reduce*-vaiheen läpi. Koska SQL-kyselyissä ei esitetä laskennan yksityiskohtia yksityiskohtia, voi käytetty relaatiotietokantajärjestelmä valita kyselylle parhaan mahdollisen suoritusmallin [@mapreduce-comparison].
+
+Pavlo ja muut vertasivat artikkelissaan Hadoop-kirjaston suorituskykyä hajautettuihin relaatiotietokantajärjestelmiin 100 tietokoneen klusterilla. Suorituskykytesteissä hajautetun relaatiotietokantajärjestelmän *Vertican* sekä toisen, nimeämättä jätetyn hajautetun relaatiotietokantajärjestelmän havaittiin olevan merkittävästi testattuja kyselyitä vastaavia Hadoop-ohjelmia tehokkaampia [@mapreduce-comparison]. Osasyyksi todetaan Hadoop-ohjelmien indeksoinnin puute – toisaalta, kuten luvussa 3.2 todetaan, indeksien käyttö MapReduce-sovelluksissa ei ole mahdotonta.
 
 On olemassa myös järjestelmiä, jotka mahdollistavat perinteisten relaatiotietokantajärjestelmien käytön hajautetusti – tällaisia järjestelmiä ovat esimerkiksi *pgpool-II* [@pgpool-site] sekä MapReduce-ohjelmointimallia toteutuksessaan hyödyntävä *HadoopDB* [@hadoopdb]. Molemmat toimivat ylimääräisenä kerroksena käyttäjän ja itsenäisten PostgreSQL-tietokantapalvelinten välissä. MapReduce-ohjelmointimallin joustavuuden vuoksi sen päälle voi rakentaa lisäksi järjestelmiä, joiden avulla MapReduce-laskentatehtäviä voidaan määrittää SQL:ää muistuttavan kyselykielen avulla. Esimerkki tällaisesta järjestelmästä on *Apache Hive* [@hive].
 
@@ -224,12 +224,18 @@ var summa = parilliset.reduce((a, b) -> (a + b))
 
 Esimerkissä suodatetaan tietojoukko *filter*-funktion avulla niin, että suodatuksen tuloksena saadussa uudessa tietojoukossa on vain alkuperäisen tietojoukon parilliset alkiot. *Cache*-funktion käyttö kertoo Spark-ohjelmistokehykselle, että tietojoukko kannattaa pyrkiä säilyttämään muistissa sen ensimmäisen laskentakerran jälkeen.
 
-Tällainen laskettujen tulosten uudelleenkäyttö on kuitenkin mahdollista myös MapReduce-ohjelmointimallin avulla – yhden MapReduce-laskentatehtävän tulos voidaan tallentaa ja käyttää sitä muissa MapReduce-laskentatehtävissä. Spark-ohjelmistokehyksen esitetään kuitenkin toimivan MapReduce-ohjelmointimallia tehokkaammin, sillä MapReduce-laskentatehtävien täytyy tallentaa ja ladata tulokset levyltä [@spark]. Koska MapReduce-ohjelmointimallissa tulosten tallennuskohteena toimivaa tekniikkaa ei ole rajoitettu, voidaan tulokset tallentaa ja ladata esimerkiksi muistissa toimivasta hajautetusta tiedostojärjestelmästä.
+Tällainen laskettujen tulosten uudelleenkäyttö on kuitenkin mahdollista myös MapReduce-ohjelmointimallin avulla – yhden MapReduce-laskentatehtävän tulos voidaan tallentaa ja käyttää sitä muissa MapReduce-laskentatehtävissä. Spark-ohjelmistokehyksen esitetään kuitenkin toimivan MapReduce-ohjelmointimallia tehokkaammin, sillä MapReduce-laskentatehtävien täytyy tallentaa ja ladata tulokset levyltä [@spark]. Kuitenkin, koska MapReduce-ohjelmointimallissa tulosten tallennuskohteena toimivaa tekniikkaa ei ole rajoitettu, voidaan tulokset tallentaa ja ladata esimerkiksi muistissa toimivasta hajautetusta tiedostojärjestelmästä.
 
 Kestävien, hajautettujen tietojoukkojen lisäksi Spark-ohjelmistokehyksessä on ominaisuuksia, joilla voidaan hallita laskentaan osallistuvien tietokoneiden välistä yhteistä tilaa [@spark]. *Yleislähetys*-muuttujien (broadcast) avulla voidaan lähettää tietoa kaikille tietokoneille tehokkaasti. Tätä ominaisuutta voisi käyttää esimerkiksi luvussa 4 esitellyn PageRank-algoritmin sivujen välisten yhteyksien lähettämiseen kaikille tietokoneille. *Kerääjät* (accumulator) ovat muuttujia, jonka arvoa laskentaan osallistuvat tietokoneet voivat muuttaa vain yhdellä operaatiolla, kasvattamalla. Kerääjiä voidaan käyttää esimerkiksi erilaisten laskurien toteutukseen.
 
 Lei Gu ja Huan Li vertasivat Hadoop- ja Spark-ohjelmistokehyksien suorituskykyä iteratiivisissa laskentatehtävissä [@spark-hadoop-comparison]. Spark-ohjelmien todettiin olevan keskimäärin Hadoop-ohjelmia nopeampia, mutta käyttävät enemmän keskusmuistia sekä hidastuvat, jos keskusmuistia ei ole käytössä riittävästi.
 
 # Yhteenveto
+
+MapReduce on ohjelmointimalli, jota voi käyttää suurten tietojoukkojen käsittelyyn ja luomiseen. MapReduce-ohjelmointimalli helpottaa hajautettua laskentaa käyttävien ohjelmien luomista monin tavoin: käyttämällä ohjelmointimallin toteuttavaa kirjastoa käyttäjän ei tarvitse huolehtia useista hajautettuun laskentaan liittyvistä yksityiskohdista, ja luvussa 2 käsiteltyjen esimerkkien perusteella ohjelmointimallin käyttö yksinkertaisten ohjelmien luomiseen on suoraviivaista.
+
+MapReduce-ohjelmointimallin yksinkertaisuudesta seuraa kuitenkin, että sellaisenaan se soveltuu tiettyihin käyttötarkoituksiin huonosti. MapReduce-ohjelman on esimerkiksi käytävä koko sen saama syöte läpi, joka joissain sovelluksissa vähentää suorituskykyä tarpeettomasti. Ohjelmointimallin joustavuudesta kuitenkin kertoo, että sen puutteita voidaan paikata muuttamalla ohjelmointimallin toimintaa sopivasti: laajentamalla ohjelmointimallia *indeksoinnilla* vältetään koko syötteen käyminen läpi, ja laskentaan osallistuvien tietokoneiden välistä kommunikaatiota voidaan vähentää käyttämällä *combiner*-funktiota. Muutokset eivät kuitenkaan ole puhtaasti suorituskykyä parantavia – esimerkiksi indeksin rakentaminen vähentää turhaan suorituskykyä, jos indeksille ei ole käyttöä. Niinpä käyttäjän on punnittava eri laajennosten hyötyjä ja haittoja sovelluskohtaisesti.
+
+MapReduce-ohjelmointimallia voidaan käyttää monentyyppisten algoritmien toteuttamiseen. Luvussa 3 esitelty PageRank-menetelmän toteuttava ohjelma osoittaa, että ohjelmointimalli soveltuu yksinkertaisten ohjelmien lisäksi esimerkiksi verkkoja käyttävien tai iteratiivisten algoritmien toteuttamiseen.
 
 # Lähteet
