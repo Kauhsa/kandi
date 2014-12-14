@@ -1,9 +1,8 @@
 install:
-- echo 'yes' | sudo add-apt-repository ppa:marutter/c2d4u
 - echo 'yes' | sudo add-apt-repository ppa:texlive-backports/ppa
 - sudo apt-get update
 - sudo apt-get install texlive-latex-recommended texlive-latex-extra texlive-lang-swedish
-  texlive-lang-finnish pandoc pandoc-citeproc
+  texlive-lang-finnish
 - mkdir gv
 - cd gv
 - wget http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-2.38.0.tar.gz
@@ -14,7 +13,7 @@ install:
 - sudo make install
 - cd ../..
 script:
-- make dist/kandi.pdf dist/kandi.html
+- make dist/kandi.pdf
 - "./deploy-gh-pages.sh"
 branches:
   only:
