@@ -113,7 +113,9 @@
 \author{Mika Viinamäki}
 \date{\today}
 \level{Kandidaatintutkielma}
-\abstract{Abstrakti}
+\abstract{Suurten tietomäärien analysointi ei ole mahdollista käyttämällä vain yhtä tietokonetta. MapReduce on Googlen vuonna 2003 esittelemä ohjelmointimalli, jota voi käyttää suurten tietomäärien käsittelyyn hajauttamalla laskentatyö usean tietokoneen kesken. Ohjelmointimalli käyttää abstraktionaan map- ja reduce-nimisiä funktioita, jotka ohjelmointimallin käyttäjä toteuttaa ohjelmassaan. Ohjelmointimallin toteuttavan kirjaston käyttäjän ei tarvitse kiinnittää huomiota moniin hajautetun laskennan yksityiskohtiin, kuten tietokoneiden väliseen kommunikointiin.
+
+Tutkielmassa tutustutaan MapReduce-ohjelmointimallin käyttöön ja toimintaan, tarkastellaan ohjelmointimallin optimointeja sekä verrataan MapReduce-ohjelmointimallia muihin hajautetun laskennan ratkaisuihin.}
 
 % The following can be used to specify keywords and classification of the paper:
 
@@ -223,8 +225,7 @@ MapReduce-ohjelmointimalliin. Luku 6 päättää tutkielman.
 
 \section{MapReduce-ohjelmointimalli}\label{mapreduce-ohjelmointimalli}
 
-MapReduce on Googlen vuonna 2003 kehittämä ohjelmointimalli \cite[
-s. 72]{mapreduce2}, jota käytetään suurten tietomäärien käsittelyyn ja
+MapReduce on Googlen vuonna 2003 kehittämä ohjelmointimalli \cite{mapreduce2}, jota käytetään suurten tietomäärien käsittelyyn ja
 tuottamiseen \cite{mapreduce}. Ohjelmointimallin
 tarkoituksena on vähentää hajautetun laskennan monimutkaisuutta
 tarjoamalla useaan hajautetun laskennan sovellukseen sopiva abstraktio
@@ -366,8 +367,7 @@ MapReduce-ohjelmointimalli ei rajoita syötteen lataamiseen tai tuloksen
 tallentamiseen käytettyjä tapoja. Syötteenä voidaan esimerkiksi käyttää
 joukkoa tiedostojärjestelmässä olevia tiedostoja, mutta
 ohjelmointimallin toteutus voi lisäksi mahdollistaa esimerkiksi
-tietokannan käytön syötteenä tai tuloksen tallennuskohteena \cite[s.
-74]{mapreduce2}. Usein MapReduce-laskentatehtäviä halutaan ketjuttaa
+tietokannan käytön syötteenä tai tuloksen tallennuskohteena \cite{mapreduce2}. Usein MapReduce-laskentatehtäviä halutaan ketjuttaa
 käyttäen saatua tulosta uuden MapReduce-laskentatehtävän syötteenä
 \cite{mapreduce}.
 
