@@ -32,6 +32,7 @@
 \usepackage{amsfonts,amsmath,amssymb,amsthm,booktabs,color,enumitem,graphicx}
 \usepackage[pdftex,hidelinks]{hyperref}
 \usepackage[parfill]{parskip}
+\usepackage[font={footnotesize,bf}]{caption}
 
 % Automatically set the PDF metadata fields
 \makeatletter
@@ -319,7 +320,7 @@ Kuvassa 1 havainnollistetaan määriteltyjä \emph{map}- ja
 nuolella viittaavat laatikot kuvaavat funktioiden syötettä, ja
 funktiosta poispäin viittatut laatikot funktion tulosta.
 
-\begin{figure}[htbp]
+\begin{figure}[!b]
 \centering
 \includegraphics{dist/map-and-reduce.pdf}
 \caption{Mahdollinen MapReduce-laskentatehtävän syöte, välitulokset ja
@@ -392,7 +393,7 @@ optimointiin, \emph{combiner}-vaiheeseen sekä indeksointiin.
 
 \subsection{Combiner}\label{combiner}
 
-\begin{figure}[htbp]
+\begin{figure}[!b]
 \centering
 \includegraphics{dist/combiner.pdf}
 \caption{MapReduce-laskentatehtävä \emph{combiner}-funktiolla
@@ -529,7 +530,7 @@ on otos PageRank-arvon laskemiseen käytetyistä sivuista, niiden
 PageRank-arvoista, sekä viittausten vaikutuksista sivujen
 PageRank-arvoon.
 
-\begin{figure}[htbp]
+\begin{figure}[!b]
 \centering
 \includegraphics{dist/pagerank.pdf}
 \caption{Esimerkki PageRank-menetelmästä}
