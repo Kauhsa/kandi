@@ -322,7 +322,7 @@ esittämäämme mahdollista tulosta, näyttää laskennan tulos
 Kuvassa 1 havainnollistetaan määriteltyjä \emph{map}- ja
 \emph{reduce}-funktioita. \emph{Map}- ja \emph{reduce}-funktioihin
 nuolella viittaavat laatikot kuvaavat funktioiden syötettä, ja
-funktiosta poispäin viittatut laatikot funktion tulosta.
+funktion viittaamat laatikot funktion tulosta.
 
 \begin{figure}[!b]
 \centering
@@ -416,7 +416,7 @@ välitulosten osittaista yhdistämistä jo \emph{map}-laskentatehtävän
 sisällä. Tämä toteutetaan soveltamalla \emph{combiner}-funktiota yhden
 \emph{map}-laskentatehtävän välitulosten yhdistämiseen
 \emph{reduce}-funktion tapaan. Seurauksena on, että \emph{map}- ja
-\emph{reduce}-laskentatehtävien välillä tarvitsee siirtää vain yksi
+\emph{reduce}-laskentatehtävien välillä tarvitsee välittää vain yksi
 välitulos jokaista avainta kohden. Näin ollen verkon yli
 \emph{reduce}-laskentatehtäville lähetettävien välitulosten määrä
 vähenee. \emph{Combiner}-funktion käyttämistä havainnollistetaan kuvassa
@@ -506,8 +506,7 @@ suorituskykyä indeksin käyttäminen paransi 64-kertaisesti
 Indeksointia voi kuitenkin hyödyntää ilman, että
 MapReduce-ohjelmointimallia laajennetaan millään tavalla. Tämä onnistuu
 käyttämällä syötteenä tietoa, jonka muodostamisessa on käytetty
-indeksointia. Tälläinen syöte voi olla esimerkiksi indeksejä käyttävän
-tietokannan kyselyn tulos \cite{mapreduce2}.
+indeksointia. Tälläinen syöte voi olla esimerkiksi indeksejä käyttävään tietokantaan tehdyn kyselyn tulos \cite{mapreduce2}.
 
 \section{MapReducen sovellus:
 PageRank}\label{mapreducen-sovellus-pagerank}
